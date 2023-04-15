@@ -10,8 +10,12 @@
         "axios": "^1.1.2",
         "husky": "^8.0.3",
         "laravel-vite-plugin": "^0.7.2",
+        "lint-staged": "^13.2.1",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
         "vite": "^4.0.0"
+    },
+    "lint-staged": {
+        "{app, config, routes, public, resources, tests}/**/*.php": "composer lint"
     }
 }
