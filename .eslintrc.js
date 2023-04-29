@@ -3,15 +3,21 @@ module.exports = {
         browser: true,
         es2021: true
     },
-    extends: 'standard',
-    overrides: [
-    ],
     parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module'
     },
     rules: {
-        indent: ['error', 4],
-        'comma-dangle': ['error', 'always-multiline'],
+        "import/first": "error",
+        "import/newline-after-import": "error",
+        "import/no-duplicates": "error",
+        "comma-dangle": ["error", "always-multiline"],
+        "indent": ["error", 4],
+        "properties": "always",
+        "block-spacing": ["error"],
+        "brace-style": "1tbs",
+        "comma-style": "last",
+        "key-spacing": ["error", { "beforeColon": false }],
+        "key-spacing": ["error", { "afterColon": true }]
     }
 }
