@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\ManagementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+# controller
+Route::controller(ManagementController::class)->group(function () {
+    Route::match(['get', 'post'], '/userManagement/userList', 'userList')->name('userManagement.userList');
+    Route::match(['get', 'post'], '/userManagement/createUser', 'createUser')->name('userManagement.createUser');
+    Route::get('/userManagement/editUser', 'editUser')->name('userManagement.editUser');
+    Route::post('/userManagement/updateUser', 'updateUser')->name('userManagement.updateUser');
+    Route::post('/userManagement/deleteUser', 'deleteUser')->name('userManagement.deleteUser');
 });
