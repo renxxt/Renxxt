@@ -13,11 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('cancelApplication', function (Blueprint $table) {
+        Schema::create('approvedApplication', function (Blueprint $table) {
             $table->integer('applicationID')->unsigned()->comment("id");
+            $table->integer('approved_userID')->unsigned()->comment("批准主管的使用者 id");
+            $table->timestamp('approved_time')->comment("批准時間");
+
             $table->foreign('applicationID')->references('applicationID')->on('applicationForms');
-            $table->string('result', 100)->comment("取消申請原因");
-            $table->timestamp('cancel_time')->comment("取消申請時間");
+            $table->foreign('approved_userID')->references('userID')->on('users');
+            $table->primary([
+                'applicationID',
+                'approved_userID'
+            ]);
+            $table->index('approved_userID');
         });
     }
 
@@ -28,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cancelApplication');
+        Schema::dropIfExists('approvedApplication');
     }
 };

@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->increments('departmentID')->comment("單位 id");
-            $table->string('department', 100)->comment("單位名稱");
+        Schema::create('questions', function (Blueprint $table) {
+            $table->increments('questionID')->comment("問題 id");
+            $table->string('question', 100)->unique()->comment("問題");
+            $table->integer('type')->comment("欄位類型(下拉選單、text、Checkboxex)");
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('questions');
     }
 };

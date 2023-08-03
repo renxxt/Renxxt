@@ -15,10 +15,14 @@ return new class extends Migration
     {
         Schema::create('applicationFormCompanion', function (Blueprint $table) {
             $table->integer('applicationID')->unsigned()->comment("id");
+            $table->integer('userID')->unsigned()->comment("使用者 id");
+
             $table->foreign('applicationID')->references('applicationID')->on('applicationForms');
-            $table->integer('staffID')->unsigned()->comment("員工 id");
-            $table->foreign('staffID')->references('staffID')->on('staffs');
-            $table->primary(['applicationID', 'staffID']);
+            $table->foreign('userID')->references('userID')->on('users');
+            $table->primary([
+                'applicationID',
+                'userID'
+            ]);
         });
     }
 
