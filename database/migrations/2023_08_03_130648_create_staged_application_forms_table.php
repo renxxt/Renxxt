@@ -13,17 +13,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('applicationForms', function (Blueprint $table) {
+        Schema::create('stagedApplicationForms', function (Blueprint $table) {
             $table->increments('applicationID')->comment("id");
-            $table->integer('staffID')->unsigned()->comment("員工 id");
-            $table->foreign('staffID')->references('staffID')->on('staffs');
+            $table->integer('userID')->unsigned()->comment("使用者 id");
             $table->integer('deviceID')->unsigned()->comment("設備 id");
-            $table->foreign('deviceID')->references('deviceID')->on('devices');
-            $table->integer('companion')->comment("是否有同伴(0→否，1→有)");
-            $table->timestamp('application_time')->comment("預借申請時間");
+            $table->integer('companion')->default(0)->comment("是否有同伴(0→否，1→有)");
             $table->datetime('estimated_pickup_time')->comment("預計使用開始時間");
             $table->datetime('estimated_return_time')->comment("預計使用結束時間");
             $table->string('target', 100)->comment("使用目的");
+
+            $table->foreign('userID')->references('userID')->on('users');
+            $table->foreign('deviceID')->references('deviceID')->on('devices');
+            $table->index([
+                'userID',
+                'deviceID'
+            ]);
         });
     }
 
@@ -34,6 +38,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('applicationForms');
+        Schema::dropIfExists('stagedApplicationForms');
     }
 };

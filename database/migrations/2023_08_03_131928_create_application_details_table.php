@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('approvedApplication', function (Blueprint $table) {
+        Schema::create('applicationDetails', function (Blueprint $table) {
             $table->integer('applicationID')->unsigned()->comment("id");
+            $table->timestamp('pickup_time')->comment("取用時間");
+            $table->datetime('return_time')->nullable()->comment("歸還時間");
+
             $table->foreign('applicationID')->references('applicationID')->on('applicationForms');
-            $table->integer('approved_staffID')->unsigned()->comment("批准主管的員工 id");
-            $table->foreign('approved_staffID')->references('staffID')->on('staffs');
-            $table->timestamp('approved_time')->comment("批准時間");
-            $table->primary(['applicationID', 'approved_staffID']);
         });
     }
 
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('approvedApplication');
+        Schema::dropIfExists('applicationDetails');
     }
 };
