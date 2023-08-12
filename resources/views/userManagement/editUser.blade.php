@@ -61,7 +61,7 @@
                 </select>
             </div>
             <div>
-                <input name="staffID" value="{{ $row['staffID'] }}" hidden>
+                <input name="userID" value="{{ $row['userID'] }}" hidden>
                 <input type="submit" name="submit" class="btn" value="修改" style="background-color: #3E517A; color: white;">
             </div>
         @endforeach

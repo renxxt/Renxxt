@@ -19,6 +19,7 @@
     </div>
     <div class="col-md-4 justify-content-center">
         <form method="POST" action="{{ route('userManagement.userList') }}">
+            @csrf
             <select name="departmentID" class="form-control" onchange="this.form.submit()">
                 <option value="0" {{ $departmentID == '0' ? 'selected' : '' }} selected>全部部門</option>
                 @if ($departments !== false)
@@ -68,9 +69,9 @@
                         <td>{{ $row['department'] }}</td>
                         <td>{{ $row['position'] }}</td>
                         <td>
-                            <a href="{{ route('userManagement.editUser', ['staffID' => $row['staffID']]) }}" class="btn" style="background-color: #3E517A; color:#FFFFFF">修改</a>
-                            <a class="btn btn-danger text-white" data-toggle="modal" data-target="#myModal{{ $row['staffID'] }}">刪除</a>
-                            <div class="modal fade text-center" id="myModal{{ $row['staffID'] }}">
+                            <a href="{{ route('userManagement.editUser', ['userID' => $row['userID']]) }}" class="btn" style="background-color: #3E517A; color:#FFFFFF">修改</a>
+                            <a class="btn btn-danger text-white" data-toggle="modal" data-target="#myModal{{ $row['userID'] }}">刪除</a>
+                            <div class="modal fade text-center" id="myModal{{ $row['userID'] }}">
                                 <div class="modal-dialog modal-sm">
                                     <div class="modal-content">
                                         <div class="modal-body">
@@ -78,7 +79,7 @@
                                             <p>員工：{{ $row['name'] }}</p>
                                         </div>
                                         <div class="modal-footer justify-content-center">
-                                            <button type="button" class="btn" onclick="delUser('{{ $row['staffID'] }}')" data-dismiss="modal" style="background-color: #3E517A; color: #FFFFFF">確認刪除</button>
+                                            <button type="button" class="btn" onclick="delUser('{{ $row['userID'] }}')" data-dismiss="modal" style="background-color: #3E517A; color: #FFFFFF">確認刪除</button>
                                             <button type="button" class="btn" data-dismiss="modal" style="background-color: #ECECEA; color: #000000">關閉</button>
                                         </div>
                                     </div>
@@ -134,11 +135,11 @@
         })
     });
 
-    function delUser(staffID) {
+    function delUser(userID) {
         $.ajax({
             type: 'POST',
             data: {
-                staffID: staffID,
+                userID: userID,
                 _token: '{{ csrf_token() }}'
             },
             url: "{{ route('userManagement.deleteUser') }}",

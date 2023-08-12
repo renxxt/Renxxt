@@ -12,10 +12,11 @@ class Management extends Model
 
     public function allUserList()
     {
-        $result = DB::table('staffs AS S')
-                    ->select('S.*', 'D.department', 'P.position')
-                    ->leftJoin('departments AS D', 'D.departmentID', '=', 'S.departmentID')
-                    ->leftJoin('positions AS P', 'P.positionID', '=', 'S.positionID')
+        $result = DB::table('users AS U')
+                    ->select('U.*', 'D.department', 'P.position')
+                    ->leftJoin('departments AS D', 'D.departmentID', '=', 'U.departmentID')
+                    ->leftJoin('positions AS P', 'P.positionID', '=', 'U.positionID')
+                    ->where('U.userID', '>', '1')
                     ->where('state', '0')
                     ->get();
 
@@ -24,11 +25,12 @@ class Management extends Model
 
     public function userList($departmentID)
     {
-        $result = DB::table('staffs AS S')
-                    ->select('S.*', 'D.department', 'P.position')
-                    ->leftJoin('departments AS D', 'D.departmentID', '=', 'S.departmentID')
-                    ->leftJoin('positions AS P', 'P.positionID', '=', 'S.positionID')
-                    ->where('S.departmentID', $departmentID)
+        $result = DB::table('users AS U')
+                    ->select('U.*', 'D.department', 'P.position')
+                    ->leftJoin('departments AS D', 'D.departmentID', '=', 'U.departmentID')
+                    ->leftJoin('positions AS P', 'P.positionID', '=', 'U.positionID')
+                    ->where('U.userID', '>', '1')
+                    ->where('U.departmentID', $departmentID)
                     ->where('state', '0')
                     ->get();
 
@@ -41,7 +43,7 @@ class Management extends Model
 
     public function createUser($data)
     {
-        $result = DB::table('staffs')->insert([
+        $result = DB::table('users')->insert([
                     'name' => $data['name'],
                     'uid' => $data['uid'],
                     'phonenumber' => $data['phonenumber'],
@@ -59,10 +61,10 @@ class Management extends Model
         }
     }
 
-    public function editUser($staffID)
+    public function editUser($userID)
     {
-        $result = DB::table('staffs')
-                    ->where('staffID', $staffID)
+        $result = DB::table('users')
+                    ->where('userID', $userID)
                     ->get();
 
         if ($result->count() > 0) {
@@ -74,8 +76,8 @@ class Management extends Model
 
     public function updateUser($data)
     {
-        $result = DB::table('staffs')
-                    ->where('staffID', $data['staffID'])
+        $result = DB::table('users')
+                    ->where('userID', $data['userID'])
                     ->update([
                         'name' => $data['name'],
                         'departmentID' => $data['department'],
@@ -91,10 +93,10 @@ class Management extends Model
         }
     }
 
-    public function deleteUser($staffID)
+    public function deleteUser($userID)
     {
-        $result = DB::table('staffs')
-                    ->where('staffID', $staffID)
+        $result = DB::table('users')
+                    ->where('userID', $userID)
                     ->update(['state' => 1]);
 
         if ($result > 0) {
@@ -119,6 +121,7 @@ class Management extends Model
     {
         $result = DB::table('positions')
                     ->select('positionID', 'position')
+                    ->where('positionID', '>', '1')
                     ->get();
 
         if ($result->count() > 0) {

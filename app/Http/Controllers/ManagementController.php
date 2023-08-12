@@ -40,9 +40,9 @@ class ManagementController extends Controller
         if ($request->isMethod('post')) {
             $data = $request->validate([
                 'name' => 'required',
-                'uid' => 'required|unique:staffs',
+                'uid' => 'required|unique:users',
                 'phonenumber' => 'required|digits:10',
-                'email' => 'required|email:rfc,dns|unique:staffs',
+                'email' => 'required|email:rfc,dns|unique:users',
                 'department' => 'required',
                 'position' => 'required'
             ]);
@@ -60,8 +60,8 @@ class ManagementController extends Controller
 
     public function editUser(Request $request)
     {
-        $staffID = $request->input('staffID');
-        $result = $this->managementModel->editUser($staffID);
+        $userID = $request->input('userID');
+        $result = $this->managementModel->editUser($userID);
         $positions = $this->managementModel->getPositions();
         $departments = $this->managementModel->getDepartments();
 
@@ -70,12 +70,13 @@ class ManagementController extends Controller
 
     public function updateUser(Request $request)
     {
-        $staffID = $request->input('staffID');
+        $userID = $request->input('userID');
         $data = $request->validate([
             'name' => 'required',
             'department' => 'required',
-            'email' => ['required',
-                Rule::unique('staffs')->ignore($staffID, 'staffID')
+            'email' => [
+                'required',
+                Rule::unique('users')->ignore($userID, 'userID')
             ],
             'phonenumber' => 'required|digits:10',
             'position' => 'required'
@@ -87,8 +88,8 @@ class ManagementController extends Controller
 
     public function deleteUser(Request $request)
     {
-        $staffID = $request->input('staffID');
-        $result = $this->managementModel->deleteUser($staffID);
+        $userID = $request->input('userID');
+        $result = $this->managementModel->deleteUser($userID);
 
         echo($result);
     }
