@@ -9,11 +9,13 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" ></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <style>
         .navbar {
-            background: #1E3B88;
+            background: #3E517A;
             color: #FFFFFF;
         }
 
@@ -30,7 +32,7 @@
             min-width: 180px;
             max-width: 180px;
             min-height: 93vh;
-            background: #1E3B88;
+            background: #3E517A;
             transition: all 0.3s;
         }
 
@@ -54,12 +56,21 @@
 
         #sidebar ul li.active>a {
             color: #000000;
-            background: #1E3B88;
+            background: #3E517A;
         }
 
         table {
             font-size: 1.2em;
         }
+
+        form, .alert {
+			padding-right: 0px;
+			padding-left: 0px;
+			margin-right: auto;
+			margin-left: auto;
+			max-width: 500px;
+			max-height: 850px;
+		}
     </style>
 </head>
 
@@ -108,4 +119,8 @@
                 @endif
             </ul>
         </nav>
+
+        <div class="col-lg-12 mt-4">
+            @yield('content')
+        </div>
     </div>
