@@ -82,7 +82,7 @@
             </div>
             <div class="collapse navbar-collapse">
 				<ul class="nav ml-auto">
-					<li><a>您好, {{ session('name') }}</a></li>
+					<li><a>您好, {{ Auth::user()->name }}</a></li>
 					<li class="mx-4">
 						<a href="">登出</a>
 					</li>
@@ -94,9 +94,18 @@
     <div class="wrapper">
         <nav id="sidebar" class="active">
             <ul class="components">
-                <li class="">
-                    <a href=""></a>
-                </li>
+                @if(Auth::user()->order === 1)
+                    <li>
+                        <a href="{{ route('userManagement.userList') }}">人員管理</a>
+                    </li>
+                @endif
+                @if(Auth::user()->order > 1)
+                    <li>
+                        <a href="{{ route('user.profile') }}">基本資料維護</a>
+                    </li>
+                @endif
+                @if(Auth::user()->order > 1 && Auth::user() < $max)
+                @endif
             </ul>
         </nav>
     </div>

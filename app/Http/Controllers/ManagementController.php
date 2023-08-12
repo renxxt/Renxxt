@@ -6,19 +6,30 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use App\Libraries\Lib;
 use App\Models\Management;
 
 class ManagementController extends Controller
 {
+    protected $lib;
     protected $managementModel;
 
-    public function __construct(Management $managementModel)
+    public function __construct(Lib $lib, Management $managementModel)
     {
+        $this->lib = $lib;
         $this->managementModel = $managementModel;
+    }
+
+    public function header()
+    {
+        $max = DB::table('positions')->max('order');
+
+        return view('header', ['max' => $max]);
     }
 
     public function userList(Request $request)
     {
+        $this->lib->adminAccess();
         if ($request->isMethod('post')) {
             $departmentID = $request->input('departmentID');
             if ($departmentID > 0) {
@@ -37,6 +48,7 @@ class ManagementController extends Controller
 
     public function createUser(Request $request)
     {
+        $this->lib->adminAccess();
         if ($request->isMethod('post')) {
             $data = $request->validate([
                 'name' => 'required',
@@ -60,6 +72,7 @@ class ManagementController extends Controller
 
     public function editUser(Request $request)
     {
+        $this->lib->adminAccess();
         $userID = $request->input('userID');
         $result = $this->managementModel->editUser($userID);
         $positions = $this->managementModel->getPositions();
@@ -70,6 +83,7 @@ class ManagementController extends Controller
 
     public function updateUser(Request $request)
     {
+        $this->lib->adminAccess();
         $userID = $request->input('userID');
         $data = $request->validate([
             'name' => 'required',
@@ -88,6 +102,7 @@ class ManagementController extends Controller
 
     public function deleteUser(Request $request)
     {
+        $this->lib->adminAccess();
         $userID = $request->input('userID');
         $result = $this->managementModel->deleteUser($userID);
 
