@@ -13,14 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('options', function (Blueprint $table) {
-            $table->increments('optionID')->comment("選項 id");
-            $table->string('option', 100)->comment("選項");
+        Schema::create('pickupForm', function (Blueprint $table) {
+            $table->integer('attributeID')->unsigned()->comment("屬性 id");
             $table->integer('questionID')->unsigned()->comment("問題 id");
-            $table->integer('sort')->comment("排序");
+            $table->integer('order')->comment("排序");
+            $table->integer('required')->default(0)->comment("必填(0→必填，1→可不填)");
 
+            $table->foreign('attributeID')->references('attributeID')->on('deviceAttributes');
             $table->foreign('questionID')->references('questionID')->on('questions');
-            $table->index('questionID');
+            $table->primary([
+                'attributeID',
+                'questionID'
+            ]);
         });
     }
 
@@ -31,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('options');
+        Schema::dropIfExists('pickupForm');
     }
 };

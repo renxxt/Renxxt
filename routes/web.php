@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 # controller
 Route::controller(ManagementController::class)->group(function () {
+    Route::get('/header', 'header')->name('header');
     Route::match(['get', 'post'], '/userManagement/userList', 'userList')->name('userManagement.userList');
     Route::match(['get', 'post'], '/userManagement/createUser', 'createUser')->name('userManagement.createUser');
     Route::get('/userManagement/editUser', 'editUser')->name('userManagement.editUser');

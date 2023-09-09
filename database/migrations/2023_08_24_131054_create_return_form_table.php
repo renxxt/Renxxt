@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('formField', function (Blueprint $table) {
+        Schema::create('returnForm', function (Blueprint $table) {
             $table->integer('attributeID')->unsigned()->comment("屬性 id");
             $table->integer('questionID')->unsigned()->comment("問題 id");
             $table->integer('order')->comment("排序");
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('formField');
+        Schema::dropIfExists('returnForm');
     }
 };

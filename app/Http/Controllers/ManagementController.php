@@ -6,19 +6,30 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use App\Libraries\Lib;
 use App\Models\Management;
 
 class ManagementController extends Controller
 {
+    protected $lib;
     protected $managementModel;
 
-    public function __construct(Management $managementModel)
+    public function __construct(Lib $lib, Management $managementModel)
     {
+        $this->lib = $lib;
         $this->managementModel = $managementModel;
+    }
+
+    public function header()
+    {
+        $max = DB::table('positions')->max('order');
+
+        return view('header', ['max' => $max]);
     }
 
     public function userList(Request $request)
     {
+        $this->lib->adminAccess();
         if ($request->isMethod('post')) {
             $departmentID = $request->input('departmentID');
             if ($departmentID > 0) {
@@ -37,12 +48,13 @@ class ManagementController extends Controller
 
     public function createUser(Request $request)
     {
+        $this->lib->adminAccess();
         if ($request->isMethod('post')) {
             $data = $request->validate([
                 'name' => 'required',
-                'uid' => 'required|unique:staffs',
+                'uid' => 'required|unique:users',
                 'phonenumber' => 'required|digits:10',
-                'email' => 'required|email:rfc,dns|unique:staffs',
+                'email' => 'required|email:rfc,dns|unique:users',
                 'department' => 'required',
                 'position' => 'required'
             ]);
@@ -60,8 +72,9 @@ class ManagementController extends Controller
 
     public function editUser(Request $request)
     {
-        $staffID = $request->input('staffID');
-        $result = $this->managementModel->editUser($staffID);
+        $this->lib->adminAccess();
+        $userID = $request->input('userID');
+        $result = $this->managementModel->editUser($userID);
         $positions = $this->managementModel->getPositions();
         $departments = $this->managementModel->getDepartments();
 
@@ -70,12 +83,14 @@ class ManagementController extends Controller
 
     public function updateUser(Request $request)
     {
-        $staffID = $request->input('staffID');
+        $this->lib->adminAccess();
+        $userID = $request->input('userID');
         $data = $request->validate([
             'name' => 'required',
             'department' => 'required',
-            'email' => ['required',
-                Rule::unique('staffs')->ignore($staffID, 'staffID')
+            'email' => [
+                'required',
+                Rule::unique('users')->ignore($userID, 'userID')
             ],
             'phonenumber' => 'required|digits:10',
             'position' => 'required'
@@ -87,8 +102,9 @@ class ManagementController extends Controller
 
     public function deleteUser(Request $request)
     {
-        $staffID = $request->input('staffID');
-        $result = $this->managementModel->deleteUser($staffID);
+        $this->lib->adminAccess();
+        $userID = $request->input('userID');
+        $result = $this->managementModel->deleteUser($userID);
 
         echo($result);
     }
