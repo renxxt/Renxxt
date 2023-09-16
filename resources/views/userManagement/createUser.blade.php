@@ -15,7 +15,7 @@
     </div>
 @endif
 
-<form method="POST" action="{{ route('userManagement.createUser') }}" class="mt-4 text-center">
+<form method="POST" action="{{ route('userManagement.store') }}" class="mt-4 text-center">
     @csrf
     <div class="form-group">
         <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="輸入姓名" required>
@@ -30,33 +30,59 @@
         <input type="text" name="email" class="form-control" value="{{ old('email') }}" placeholder="輸入信箱" required>
     </div>
     <div class="form-group">
-        <select name="department" class="form-control">
+        <select name="department" class="form-control" id="departmentList">
             <option disabled selected>請選擇部門</option>
             @if ($departments !== false)
                 @foreach ($departments as $row)
-                    @php
-                        $dep = get_object_vars($row);
-                    @endphp
-                    <option value="{{ $dep['departmentID'] }}" {{ old('department') == $dep['departmentID'] ? 'selected' : '' }}>{{ $dep['department'] }}</option>
+                    <option value="{{ $row['departmentID'] }}" {{ old('department') == $row['departmentID'] ? 'selected' : '' }}>{{ $row['department'] }}</option>
                 @endforeach
             @endif
         </select>
     </div>
     <div class="form-group">
-        <select name="position" class="form-control">
+        <select name="position" class="form-control" id="positionList">
             <option disabled selected>請選擇職位</option>
             @if ($positions !== false)
                 @foreach ($positions as $row)
-                    @php
-                        $pos = get_object_vars($row);
-                    @endphp
-                    <option value="{{ $pos['positionID'] }}" {{ old('position') == $pos['positionID'] ? 'selected' : '' }}>{{ $pos['position'] }}</option>
+                    <option value="{{ $row['positionID'] }}" {{ old('position') == $row['positionID'] ? 'selected' : '' }}>{{ $row['position'] }}</option>
                 @endforeach
             @endif
+        </select>
+    </div>
+    <div class="form-group">
+        <select name="superior" class="form-control" id="superiorList">
+            <option disabled selected>請選擇上級</option>
         </select>
     </div>
     <div>
         <input type="submit" name="submit" class="btn" value="新增" style="background-color: #3E517A; color: white;">
     </div>
 </form>
+
+<script>
+    $(document).ready(function() {
+        $('#positionList').change(function() {
+            var positionID = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: "{{ route('api.getUser') }}",
+                dataType: 'json',
+                data: { positionID: positionID },
+                success: function(data) {
+                    var oldSuperior = {{ old('superior')===null ? 'null':old('superior') }};
+                    if (data !== false) {
+                        $.each(data, function(index, list) {
+                            $("#superiorList").append(
+                                $("<option></option>")
+                                    .attr("value", list.userID)
+                                    .prop("selected", (oldSuperior != null && oldSuperior == list.userID))
+                                    .text(list.name + " - " + list.position)
+                            );
+                        });
+                    }
+                }
+            });
+        })
+    });
+</script>
 @endsection

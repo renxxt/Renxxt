@@ -1,6 +1,6 @@
 <?php
-use App\Http\Controllers\ManagementController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,11 +14,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 # controller
-Route::controller(ManagementController::class)->group(function () {
+Route::controller(UserManagementController::class)->group(function () {
     Route::get('/header', 'header')->name('header');
-    Route::match(['get', 'post'], '/userManagement/userList', 'userList')->name('userManagement.userList');
-    Route::match(['get', 'post'], '/userManagement/createUser', 'createUser')->name('userManagement.createUser');
-    Route::get('/userManagement/editUser', 'editUser')->name('userManagement.editUser');
-    Route::post('/userManagement/updateUser', 'updateUser')->name('userManagement.updateUser');
-    Route::post('/userManagement/deleteUser', 'deleteUser')->name('userManagement.deleteUser');
+    Route::prefix('userManagement')->group(function () {
+        Route::get('/list', 'list')->name('userManagement.list');
+        Route::get('/user', 'create')->name('userManagement.create');
+        Route::post('/user', 'store')->name('userManagement.store');
+        Route::get('/user/{id}', 'show')->name('userManagement.show');
+        Route::put('/user', 'update')->name('userManagement.update');
+        Route::delete('/user', 'delete')->name('userManagement.delete');
+    });
 });

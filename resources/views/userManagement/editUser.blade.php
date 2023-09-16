@@ -15,56 +15,83 @@
     </div>
 @endif
 
-<form method="POST" action="{{ route('userManagement.updateUser') }}" class="mt-4 text-center">
+<form method="POST" action="{{ route('userManagement.update') }}" class="mt-4 text-center">
     @csrf
+    <input type="hidden" name="_method" value="PUT">
     @if ($result !== false)
-        @foreach ($result as $row)
-            @php
-                $row = get_object_vars($row);
-            @endphp
-            <div class="form-group">
-                <input type="text" name="name" class="form-control" value="{{ $row['name'] }}" placeholder="輸入姓名" required>
-            </div>
-            <div class="form-group">
-                <input type="text" name="uid" class="form-control" value="{{ $row['uid'] }}" placeholder="輸入工號" disabled>
-            </div>
-            <div class="form-group">
-                <input type="text" name="phonenumber" class="form-control" value="{{ $row['phonenumber'] }}" placeholder="輸入電話" required>
-            </div>
-            <div class="form-group">
-                <input type="text" name="email" class="form-control" value="{{ $row['email'] }}" placeholder="輸入信箱" required>
-            </div>
-            <div class="form-group">
-                <select name="department" class="form-control">
-                    <option disabled>請選擇部門</option>
-                    @if ($departments !== false)
-                        @foreach ($departments as $dep)
-                            @php
-                                $dep = get_object_vars($dep);
-                            @endphp
-                            <option value="{{ $dep['departmentID'] }}"  {{ $row['departmentID'] == $dep['departmentID'] ? 'selected' : '' }}>{{ $dep['department'] }}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-            <div class="form-group">
-                <select name="position" class="form-control">
-                    <option disabled>請選擇職位</option>
-                    @if ($positions !== false)
-                        @foreach ($positions as $pos)
-                            @php
-                                $pos = get_object_vars($pos);
-                            @endphp
-                            <option value="{{ $pos['positionID'] }}" {{ $row['positionID'] == $pos['positionID'] ? 'selected' : '' }}>{{ $pos['position'] }}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-            <div>
-                <input name="userID" value="{{ $row['userID'] }}" hidden>
-                <input type="submit" name="submit" class="btn" value="修改" style="background-color: #3E517A; color: white;">
-            </div>
-        @endforeach
+        <div class="form-group">
+            <input type="text" name="name" class="form-control" value="{{ $result['name'] }}" placeholder="輸入姓名" required>
+        </div>
+        <div class="form-group">
+            <input type="text" name="uid" class="form-control" value="{{ $result['uid'] }}" placeholder="輸入工號" disabled>
+        </div>
+        <div class="form-group">
+            <input type="text" name="phonenumber" class="form-control" value="{{ $result['phonenumber'] }}" placeholder="輸入電話" required>
+        </div>
+        <div class="form-group">
+            <input type="text" name="email" class="form-control" value="{{ $result['email'] }}" placeholder="輸入信箱" required>
+        </div>
+        <div class="form-group">
+            <select name="department" class="form-control" id="departmentList">
+                <option disabled>請選擇部門</option>
+                @if ($departments !== false)
+                    @foreach ($departments as $dep)
+                        <option value="{{ $dep['departmentID'] }}"  {{ $result['departmentID'] == $dep['departmentID'] ? 'selected' : '' }}>{{ $dep['department'] }}</option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+        <div class="form-group">
+            <select name="position" class="form-control" id="positionList">
+                <option disabled>請選擇職位</option>
+                @if ($positions !== false)
+                    @foreach ($positions as $pos)
+                        <option value="{{ $pos['positionID'] }}" {{ $result['positionID'] == $pos['positionID'] ? 'selected' : '' }}>{{ $pos['position'] }}</option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+        <div class="form-group">
+            <select name="superior" class="form-control" id="superiorList">
+                <option disabled>請選擇上級</option>
+                @if ($suppliers !== false)
+                    @foreach ($suppliers as $sup)
+                        <option value="{{ $sup['userID'] }}" {{ $result['userID'] == $sup['supplierID'] ? 'selected' : '' }}>{{ $sup['name'] . " - " . $sup['position'] }}</option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+        <div>
+            <input name="userID" value="{{ $result['userID'] }}" hidden>
+            <input type="submit" name="submit" class="btn" value="修改" style="background-color: #3E517A; color: white;">
+        </div>
     @endif
 </form>
+
+<script>
+    $(document).ready(function() {
+        $('#positionList').change(function() {
+            var positionID = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: "{{ route('api.getUser') }}",
+                dataType: 'json',
+                data: { positionID: positionID },
+                success: function(data) {
+                    var oldSuperior = {{ old('superior')===null ? 'null':old('superior') }};
+                    if (data !== false) {
+                        $.each(data, function(index, list) {
+                            $("#superiorList").append(
+                                $("<option></option>")
+                                    .attr("value", list.userID)
+                                    .prop("selected", (oldSuperior != null && oldSuperior == list.userID))
+                                    .text(list.name + " - " + list.position)
+                            );
+                        });
+                    }
+                }
+            });
+        })
+    });
+</script>
 @endsection
