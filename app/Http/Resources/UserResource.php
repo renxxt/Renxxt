@@ -85,4 +85,13 @@ class UserResource
 
         return $result;
     }
+
+    public function getId($uid)
+    {
+        $result = User::where('uid', $uid)
+                    ->select('userID')
+                    ->first();
+
+        return $result;
+    }
 }

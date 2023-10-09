@@ -9,6 +9,8 @@ class DeviceAttribute extends Model
 {
     use HasFactory;
 
+    protected $table = 'deviceattributes';
+
     protected $fillable = [
         'name',
         'display',

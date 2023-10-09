@@ -66,7 +66,7 @@
     <!-- 刪除成功的 Modal 元件 -->
     <div class="modal text-center" id="successModal" role="dialog">
         <div class="modal-dialog modal-sm">
-            <div class="modal-content"  style="background-color: #3E517A; color: #FFFFFF">
+            <div class="modal-content" style="background-color: #3E517A; color: #FFFFFF">
                 <div class="modal-body">
                     <h3>刪除成功</h3>
                 </div>
@@ -121,7 +121,7 @@
                 { data: 'position' },
                 { data: 'superior', defaultContent: "無上級" },
                 {
-                    data : null,
+                    data: null,
                     render: function (data, type, row, meta) {
                         var userID = row.userID;
                         var name = row.name;

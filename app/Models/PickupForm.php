@@ -9,6 +9,8 @@ class PickupForm extends Model
 {
     use HasFactory;
 
+    protected $table = 'pickupform';
+
     protected $fillable = [
         'attributeID',
         'questionID',

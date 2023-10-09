@@ -9,6 +9,8 @@ class ReturnForm extends Model
 {
     use HasFactory;
 
+    protected $table = 'returnform';
+
     protected $fillable = [
         'attributeID',
         'questionID',
