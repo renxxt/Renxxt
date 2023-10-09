@@ -17,6 +17,8 @@ return new class extends Migration
             $table->integer('applicationID')->unsigned()->comment("id");
             $table->string('result', 100)->comment("取消申請原因");
             $table->timestamp('cancel_time')->comment("取消申請時間");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
 
             $table->foreign('applicationID')->references('applicationID')->on('applicationForms');
         });

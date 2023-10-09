@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('option', 100)->comment("選項");
             $table->integer('questionID')->unsigned()->comment("問題 id");
             $table->integer('sort')->comment("排序");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
 
             $table->foreign('questionID')->references('questionID')->on('questions');
             $table->index('questionID');

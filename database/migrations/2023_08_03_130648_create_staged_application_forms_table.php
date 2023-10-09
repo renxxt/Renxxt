@@ -21,6 +21,8 @@ return new class extends Migration
             $table->datetime('estimated_pickup_time')->comment("預計使用開始時間");
             $table->datetime('estimated_return_time')->comment("預計使用結束時間");
             $table->string('target', 100)->comment("使用目的");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
 
             $table->foreign('userID')->references('userID')->on('users');
             $table->foreign('deviceID')->references('deviceID')->on('devices');

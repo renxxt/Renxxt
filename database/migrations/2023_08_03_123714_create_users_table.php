@@ -24,6 +24,8 @@ return new class extends Migration
             $table->integer('positionID')->unsigned()->comment("職稱 id");
             $table->integer('superiorID')->unsigned()->nullable()->comment("上級 id");
             $table->integer('state')->default(0)->comment("狀態(0→存在，1→已刪除)");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
 
             $table->foreign('departmentID')->references('departmentID')->on('departments');
             $table->foreign('positionID')->references('positionID')->on('positions');

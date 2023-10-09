@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('pickup_form')->default(0)->comment("是否需要取用表單(0→不需要，1→需要)");
             $table->integer('return_form')->default(0)->comment("是否需要歸還表單(0→不需要，1→需要)");
             $table->integer('companion_number')->default(0)->comment("同伴同行人數");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
         });
     }
 

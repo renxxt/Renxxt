@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('deviceID')->unsigned()->comment("設備 id");
             $table->string('direction', 100)->comment("說明");
             $table->timestamp('repair_time')->comment("報修時間");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
 
             $table->foreign('deviceID')->references('deviceID')->on('devices');
             $table->index('deviceID');
