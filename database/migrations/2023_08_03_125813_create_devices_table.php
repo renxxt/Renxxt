@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('price')->comment("費用");
             $table->integer('attributeID')->unsigned()->comment("屬性 id");
             $table->integer('display')->comment("設備狀態(0→可見，1→隱藏，2→已刪除)");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
 
             $table->foreign('userID')->references('userID')->on('users');
             $table->foreign('attributeID')->references('attributeID')->on('deviceAttributes');

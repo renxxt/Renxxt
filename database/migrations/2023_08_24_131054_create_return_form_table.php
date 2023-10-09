@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('questionID')->unsigned()->comment("問題 id");
             $table->integer('order')->comment("排序");
             $table->integer('required')->default(0)->comment("必填(0→必填，1→可不填)");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
 
             $table->foreign('attributeID')->references('attributeID')->on('deviceAttributes');
             $table->foreign('questionID')->references('questionID')->on('questions');

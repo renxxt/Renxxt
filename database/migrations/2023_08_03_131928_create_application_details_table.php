@@ -17,6 +17,8 @@ return new class extends Migration
             $table->integer('applicationID')->unsigned()->comment("id");
             $table->timestamp('pickup_time')->comment("取用時間");
             $table->datetime('return_time')->nullable()->comment("歸還時間");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
 
             $table->foreign('applicationID')->references('applicationID')->on('applicationForms');
         });

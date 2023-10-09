@@ -17,6 +17,8 @@ return new class extends Migration
             $table->increments('positionID')->comment("職稱 id");
             $table->string('position', 100)->unique()->comment("職稱");
             $table->integer('order')->comment("順序");
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
         });
     }
 
