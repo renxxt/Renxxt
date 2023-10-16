@@ -27,7 +27,7 @@
         <input type="text" name="phonenumber" class="form-control" value="{{ old('phonenumber') }}" placeholder="輸入電話" required>
     </div>
     <div class="form-group">
-        <input type="text" name="email" class="form-control" value="{{ old('email') }}" placeholder="輸入信箱" required>
+        <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="輸入信箱" required>
     </div>
     <div class="form-group">
         <select name="department" class="form-control" id="departmentList">
@@ -63,6 +63,15 @@
     $(document).ready(function() {
         $('#positionList').change(function() {
             var positionID = $(this).val();
+            superiorList(positionID);
+        })
+
+        var positionID = $('#positionList').val();
+        if (positionID) {
+            superiorList(positionID);
+        }
+
+        function superiorList(positionID) {
             $.ajax({
                 type: 'GET',
                 url: "{{ route('api.getUser') }}",
@@ -82,7 +91,7 @@
                     }
                 }
             });
-        })
+        }
     });
 </script>
 @endsection
