@@ -25,27 +25,27 @@ class Lib
         if (session('order') == 1) {
             //
         } else {
-            return redirect()->route('user.login');
+            return redirect()->route('login');
         }
     }
 
     # 管理層
     public function managementAccess()
     {
-        if (session('order') > 1 && session('order') < $this->max) {
+        if (session('order') > 1 && session('order') < $this->maxOrder) {
             //
         } else {
-            return redirect()->route('user.login');
+            return redirect()->route('login');
         }
     }
 
     # 一般使用者
     public function userAccess()
     {
-        if (session('order') == $this->max) {
+        if (session('order') == $this->maxOrder) {
             //
         } else {
-            return redirect()->route('user.login');
+            return redirect()->route('login');
         }
     }
 }

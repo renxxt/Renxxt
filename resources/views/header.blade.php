@@ -96,7 +96,7 @@
 				<ul class="nav ml-auto">
 					<li><a>您好, {{ Auth::user()->name }}</a></li>
 					<li class="mx-4">
-						<a href="">登出</a>
+						<a href="{{ route('logout') }}">登出</a>
 					</li>
 				</ul>
 			</div>
@@ -106,14 +106,14 @@
     <div class="wrapper">
         <nav id="sidebar" class="active">
             <ul class="components">
-                @if(Auth::user()->order === 1)
+                @if(session('order') === 1)
                     <li>
                         <a href="{{ route('userManagement.userList') }}">人員管理</a>
                     </li>
                 @endif
-                @if(Auth::user()->order > 1)
+                @if(session('order') > 1)
                     <li>
-                        <a href="{{ route('user.profile') }}">基本資料維護</a>
+                        <a href="{{ route('profile') }}">基本資料維護</a>
                     </li>
                 @endif
                 @if(Auth::user()->order > 1 && Auth::user() < $max)

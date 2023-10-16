@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DeviceAttributeController;
 use App\Http\Controllers\DeviceController;
@@ -17,7 +18,20 @@ use App\Http\Controllers\QuestionController;
 */
 
 # controller
-Route::controller(UserManagementController::class)->group(function () {
+Route::controller(UserController::class)->group(function () {
+    Route::match(['get','post'], 'login', 'login')->name('login');
+    Route::get('/logout','logout')->name('logout');
+    Route::get('/forgetPwd','forgetPwd')->name('forgetPwd');
+    Route::post('/emailVerify', 'emailVerify')->name('emailVerify');
+    Route::get('/verify/{id}/{hash}', 'verify')->name('verify');
+    Route::post('/resetPwd', 'resetPwd')->name('resetPwd');
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', 'profile')->name('profile');
+        Route::put('/profile', 'update')->name('profile.update');
+    });
+});
+
+Route::controller(UserManagementController::class)->middleware('auth')->group(function () {
     Route::get('/header', 'header')->name('header');
     Route::prefix('userManagement')->group(function () {
         Route::get('/list', 'list')->name('userManagement.list');
@@ -29,7 +43,7 @@ Route::controller(UserManagementController::class)->group(function () {
     });
 });
 
-Route::controller(DeviceAttributeController::class)->group(function () {
+Route::controller(DeviceAttributeController::class)->middleware('auth')->group(function () {
     Route::prefix('serviceManagement')->group(function () {
         Route::get('/list', 'list')->name('serviceManagement.list');
         Route::get('/attribute', 'create')->name('serviceManagement.attribute.create');
@@ -41,7 +55,7 @@ Route::controller(DeviceAttributeController::class)->group(function () {
     });
 });
 
-Route::controller(DeviceController::class)->group(function () {
+Route::controller(DeviceController::class)->middleware('auth')->group(function () {
     Route::prefix('serviceManagement')->group(function () {
         Route::get('/device', 'create')->name('serviceManagement.device.create');
         Route::post('/device', 'store')->name('serviceManagement.device.store');
@@ -52,7 +66,7 @@ Route::controller(DeviceController::class)->group(function () {
     });
 });
 
-Route::controller(QuestionController::class)->group(function () {
+Route::controller(QuestionController::class)->middleware('auth')->group(function () {
     Route::prefix('serviceManagement')->group(function () {
         Route::post('/question', 'store')->name('serviceManagement.question.store');
     });

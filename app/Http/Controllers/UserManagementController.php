@@ -12,10 +12,12 @@ use App\Http\Resources\DepartmentResource AS Department;
 
 class UserManagementController extends Controller
 {
+    protected $lib;
     protected $user;
 
-    public function __construct(User $user)
+    public function __construct(Lib $lib, User $user)
     {
+        $this->lib = $lib;
         $this->user = $user;
     }
 
@@ -62,19 +64,16 @@ class UserManagementController extends Controller
                 'required',
                 'unique:users'
             ],
-            'name' => ['required'],
-            'phonenumber' => [
-                'required',
-                'digits:10'
-            ],
+            'name' => [ 'required', 'string' ],
+            'phonenumber' => [ 'required', 'digits:10' ],
             'email' => [
                 'required',
                 'email:rfc,dns',
                 'unique:users'
             ],
-            'department' => ['required'],
-            'position' => ['required'],
-            'superior' => ['required']
+            'department' => [ 'required', 'integer' ],
+            'position' => [ 'required', 'integer' ],
+            'superior' => [ 'required', 'integer' ]
         ]);
 
         $data['password'] = Hash::make(substr($data['phonenumber'], 4, 6));
@@ -101,8 +100,8 @@ class UserManagementController extends Controller
         $this->lib->adminAccess();
         $userID = $request->input('userID');
         $data = $request->validate([
-            'userID' => ['required'],
-            'name' => ['required'],
+            'userID' => [ 'required', 'integer' ],
+            'name' => [ 'required', 'string' ],
             'phonenumber' => [
                 'required',
                 'digits:10'
@@ -112,9 +111,9 @@ class UserManagementController extends Controller
                 'email:rfc,dns',
                 Rule::unique('users')->ignore($userID, 'userID')
             ],
-            'department' => ['required'],
-            'position' => ['required'],
-            'superior' => ['required']
+            'department' => [ 'required', 'integer' ],
+            'position' => [ 'required', 'integer' ],
+            'superior' => [ 'required', 'integer' ]
         ]);
 
         $data['password'] = Hash::make(substr($data['phonenumber'], 4, 6));
@@ -126,7 +125,7 @@ class UserManagementController extends Controller
     {
         $this->lib->adminAccess();
         $data = $request->validate([
-            'userID' => ['required']
+            'userID' => [ 'required', 'integer' ]
         ]);
         $result = $this->user->delete($data['userID']);
 
