@@ -26,24 +26,4 @@ class QuestionResource
 
         return $result;
     }
-
-    public function pickupList()
-    {
-        $result = Question::select('questions.*', 'P.required')
-                    ->leftjoin('pickupform AS P', 'P.questionID', '=', 'questions.questionID')
-                    ->orderBy('P.order', 'desc')
-                    ->get();
-
-        return $result;
-    }
-
-    public function returnList()
-    {
-        $result = Question::select('questions.*', 'R.required')
-                    ->leftjoin('returnform AS R', 'R.questionID', '=', 'questions.questionID')
-                    ->orderBy('R.order', 'desc')
-                    ->get();
-
-        return $result;
-    }
 }

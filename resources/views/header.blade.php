@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <style>
         .navbar {
@@ -94,9 +95,9 @@
             </div>
             <div class="collapse navbar-collapse">
 				<ul class="nav ml-auto">
-					<li><a>您好, {{ Auth::user()->name }}</a></li>
+					{{-- <li><a>您好, {{ Auth::user()->name }}</a></li> --}}
 					<li class="mx-4">
-						<a href="{{ route('logout') }}">登出</a>
+						{{-- <a href="{{ route('logout') }}">登出</a> --}}
 					</li>
 				</ul>
 			</div>

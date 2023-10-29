@@ -11,10 +11,12 @@ use App\Http\Resources\UserResource AS User;
 
 class DeviceController extends Controller
 {
+    protected $lib;
     protected $device;
 
-    public function __construct(Device $device)
+    public function __construct(Lib $lib, Device $device)
     {
+        $this->lib = $lib;
         $this->device = $device;
     }
 
@@ -131,6 +133,24 @@ class DeviceController extends Controller
         ]);
 
         $result = $this->device->changeDisplay($data);
+        return $result;
+    }
+
+    public function getDevice(Request $request)
+    {
+        $data = $request->validate([
+            'applicationID' => [ 'integer' ],
+            'attributeID' => [ 'required', 'integer' ],
+            'estimated_pickup_time' => [ 'required' ],
+            'estimated_return_time' => [ 'required' ]
+        ]);
+
+        if (isset($data['applicationID'])) {
+            $result = $this->device->getDevices($data);
+        } else {
+            $result = $this->device->getDevice($data);
+        }
+
         return $result;
     }
 }

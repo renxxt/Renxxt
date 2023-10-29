@@ -7,6 +7,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\PickupFormController;
 use App\Http\Controllers\ReturnFormController;
+use App\Http\Controllers\ApplicationFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,11 @@ Route::controller(QuestionController::class)->group(function () {
 
 Route::controller(DeviceController::class)->group(function () {
     Route::get('/device/list', 'list')->name('api.device.list');
+    Route::post('/getDevice', 'getDevice')->name('api.getDevice');
+});
+
+Route::controller(ApplicationFormController::class)->group(function () {
+    Route::post('/updateReturnTime', 'updateReturnTime')->name('api.updateReturnTime');
 });
 
 Route::controller(PickupFormController::class)->group(function () {

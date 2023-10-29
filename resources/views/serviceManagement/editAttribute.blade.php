@@ -127,8 +127,8 @@
             <div style="margin: 25px;">
                 <h2>取用表單</h2>
                 <ul class="pickupList">
-                    @if ($pickupData !== false)
-                        @foreach ($pickupData as $row)
+                    @if ($result['pickup_form'] == 1)
+                        @foreach ($result['pickup_forms'] as $row)
                             <li class="list-group-item">
                                 <input class="form-check-input" name="pickupQuestion[]" type="checkbox" value="{{ $row['questionID'] }}" {{ $row['required'] === null ? '' : 'checked' }}>
                                 <label class="form-check-label mr-3">{{ $row['question'] }}</label>
@@ -149,8 +149,8 @@
             <div style="margin: 25px;">
                 <h2>歸還表單</h2>
                 <ul class="returnList">
-                    @if ($returnData !== false)
-                        @foreach ($returnData as $row)
+                    @if ($result['return_form'] == 1)
+                        @foreach ($result['return_forms'] as $row)
                             <li class="list-group-item">
                                 <input class="form-check-input" name="returnQuestion[]" type="checkbox" value="{{ $row['questionID'] }}" {{ $row['required'] === null ? '' : 'checked' }}>
                                 <label class="form-check-label mr-3">{{ $row['question'] }}</label>

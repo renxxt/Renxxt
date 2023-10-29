@@ -30,7 +30,9 @@ class DeviceAttributeResource
 
     public function show($id)
     {
-        $result = DeviceAttribute::where('attributeID', $id)->first();
+        $result = DeviceAttribute::with(['pickupForms', 'returnForms'])
+                    ->where('attributeID', $id)
+                    ->first();
 
         return $result;
     }

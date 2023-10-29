@@ -6,18 +6,17 @@ use Illuminate\Http\Request;
 use App\Libraries\Lib;
 use Illuminate\Validation\Rule;
 use App\Http\Resources\DeviceAttributeResource AS DeviceAttribute;
-use App\Http\Resources\PositionResource AS Position;
-use App\Http\Resources\DepartmentResource AS Department;
 use App\Http\Resources\PickupFormResource AS PickupForm;
 use App\Http\Resources\ReturnFormResource AS ReturnForm;
-use App\Http\Resources\QuestionResource AS Question;
 
 class DeviceAttributeController extends Controller
 {
+    protected $lib;
     protected $deviceAttribute;
 
-    public function __construct(DeviceAttribute $deviceAttribute)
+    public function __construct(Lib $lib, DeviceAttribute $deviceAttribute)
     {
+        $this->lib = $lib;
         $this->deviceAttribute = $deviceAttribute;
     }
 
@@ -121,11 +120,8 @@ class DeviceAttributeController extends Controller
     {
         $this->lib->adminAccess();
         $result = $this->deviceAttribute->show($id);
-        $questionResource = new Question();
-        $pickupData = $questionResource->pickupList($id);
-        $returnData = $questionResource->returnList($id);
 
-        return view('serviceManagement.editAttribute', ['result' => $result, 'pickupData' => $pickupData, 'returnData' => $returnData]);
+        return view('serviceManagement.editAttribute', ['result' => $result]);
     }
 
     public function update(Request $request)

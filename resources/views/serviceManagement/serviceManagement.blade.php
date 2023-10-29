@@ -15,6 +15,7 @@
         width: 95%;
     }
 </style>
+
 <div class="row" style="margin-left: 20px;">
     <h2>服務管理</h2>
     <div class="mr-5 dropdown" style="margin: auto;">
@@ -35,7 +36,7 @@
                     <h4>{{ $row['name'] }}</h4>
                 </div>
                 <div class="ml-auto mr-4">
-                    <a class="bi bi-trash-fill mr-2 deleteCheck" data-toggle="modal" data-target="#myModal" data-attr-id="{{ $row['attributeID'] }}" data-attr-name="{{ $row['name'] }}"></a>
+                    <a class="bi bi-trash-fill mr-2 deleteCheck" data-toggle="modal" data-target="#deleteModal" data-attr-id="{{ $row['attributeID'] }}" data-attr-name="{{ $row['name'] }}"></a>
                     <a href="{{ route('serviceManagement.attribute.show', ['id' => $row['attributeID']]) }}" class="bi bi-pencil-square mr-2"></a>
                     <a class="bi bi-eye-slash-fill mr-2" id="hideAttribute" data-id="{{ $row['attributeID'] }}" style="display: {{ $row['display'] == 0 ? '' : 'none' }};"></a>
                     <a class="bi bi-eye-fill mr-2" id="showAttribute" data-id="{{ $row['attributeID'] }}" style="display: {{ $row['display'] == 1 ? '' : 'none' }};"></a>
@@ -94,7 +95,7 @@
     </div>
 </div>
 
-<div class="modal fade text-center" id="myModal">
+<div class="modal fade text-center" id="deleteModal">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-body">
@@ -211,7 +212,7 @@
                             var name = row.name;
                             var display = row.display
                             var button = `
-                                <a class="bi bi-trash-fill mr-2 deleteCheck" data-toggle="modal" data-target="#myModal" data-device-id="${deviceID}" data-device-name="${name}"></a>
+                                <a class="bi bi-trash-fill mr-2 deleteCheck" data-toggle="modal" data-target="#deleteModal" data-device-id="${deviceID}" data-device-name="${name}"></a>
                                 <a href="/serviceManagement/device/${deviceID}" class="bi bi-pencil-square mr-2"></a>
                                 <a class="bi bi-eye-slash-fill mr-2" id="hideDevice" data-id="${deviceID}" style="display: ${display == 0 ? '' : 'none'};"></a>
                                 <a class="bi bi-eye-fill mr-2" id="showDevice" data-id="${deviceID}" style="display: ${display == 1 ? '' : 'none'};"></a>
@@ -340,14 +341,14 @@
                 var attributeID = $(this).data('attr-id');
                 var name = $(this).data('attr-name');
                 var type = "設備屬性：";
-                $('#myModal #delete').attr('data-attr-id', attributeID);
+                $('#deleteModal #delete').attr('data-attr-id', attributeID);
             } else if ($(this).is('[data-device-id]')) {
                 var deviceID = $(this).data('device-id');
                 var name = $(this).data('device-name');
                 var type = "設備：";
-                $('#myModal #delete').attr('data-device-id', deviceID);
+                $('#deleteModal #delete').attr('data-device-id', deviceID);
             }
-            $('#myModal .modal-body p').text(type + name);
+            $('#deleteModal .modal-body p').text(type + name);
         })
 
         $(document).on('click', '#delete', function() {

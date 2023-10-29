@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('userID')->unsigned()->comment("使用者 id");
             $table->integer('deviceID')->unsigned()->comment("設備 id");
             $table->integer('companion')->comment("是否有同伴(0→否，1→有)");
-            $table->timestamp('application_time')->comment("預借申請時間");
+            $table->timestamp('application_time')->comment("預借申請時間"); //不需要該欄位 因有created_at
             $table->datetime('estimated_pickup_time')->comment("預計使用開始時間");
             $table->datetime('estimated_return_time')->comment("預計使用結束時間");
             $table->string('target', 100)->comment("使用目的");

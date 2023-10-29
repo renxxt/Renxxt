@@ -78,4 +78,51 @@ class DeviceResource
 
         return $result;
     }
+
+    public function getDevice($data)
+    {
+        $result = Device::where('attributeID', $data['attributeID'])
+                    ->select('devices.*')
+                    ->whereNotIn('devices.deviceID', function ($query) use ($data) {
+                        $query->select('A.deviceID')
+                            ->from('applicationforms as A')
+                            ->where(function ($query) use ($data) {
+                                $query->where(function ($query) use ($data) {
+                                    $query->where('A.estimated_pickup_time', '>=', $data['estimated_pickup_time'])
+                                        ->where('A.estimated_pickup_time', '<=', $data['estimated_return_time']);
+                                })
+                                ->orWhere(function ($query) use ($data) {
+                                    $query->where('A.estimated_return_time', '>=', $data['estimated_pickup_time'])
+                                        ->where('A.estimated_return_time', '<=', $data['estimated_return_time']);
+                                });
+                            })
+                            ->where('A.state', '<', 3);
+                    })->get();
+
+            return $result;
+    }
+
+    public function getDevices($data)
+    {
+        $result = Device::where('attributeID', $data['attributeID'])
+                    ->select('devices.*')
+                    ->whereNotIn('devices.deviceID', function ($query) use ($data) {
+                        $query->select('A.deviceID')
+                            ->from('applicationforms as A')
+                            ->where('A.applicationID', '<>', $data['applicationID'])
+                            ->where(function ($query) use ($data) {
+                                $query->where(function ($query) use ($data) {
+                                    $query->where('A.estimated_pickup_time', '>=', $data['estimated_pickup_time'])
+                                        ->where('A.estimated_pickup_time', '<=', $data['estimated_return_time']);
+                                })
+                                ->orWhere(function ($query) use ($data) {
+                                    $query->where('A.estimated_return_time', '>=', $data['estimated_pickup_time'])
+                                        ->where('A.estimated_return_time', '<=', $data['estimated_return_time']);
+                                });
+                            })
+                            ->where('A.state', '<', 3);
+                    })->get();
+
+        return $result;
+    }
 }
