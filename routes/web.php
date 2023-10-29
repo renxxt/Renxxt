@@ -1,10 +1,14 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DeviceAttributeController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\StagedApplicationFormController;
+use App\Http\Controllers\ApplicationFormController;
+use App\Http\Controllers\ApplicationManagementController;
+use App\Http\Controllers\PickupFormController;
+use App\Http\Controllers\ReturnFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,4 +74,44 @@ Route::controller(QuestionController::class)->middleware('auth')->group(function
     Route::prefix('serviceManagement')->group(function () {
         Route::post('/question', 'store')->name('serviceManagement.question.store');
     });
+});
+
+Route::controller(StagedApplicationFormController::class)->group(function () {
+    Route::prefix('staged')->group(function () {
+        Route::get('/applicationForm/list', 'list')->name('staged.list');
+        Route::post('/applicationForm', 'store')->name('staged.store');
+        Route::post('/applicationForm/show', 'show')->name('staged.show');
+        Route::put('/applicationForm', 'update')->name('staged.update');
+        Route::delete('/applicationForm', 'delete')->name('staged.delete');
+    });
+});
+
+Route::controller(ApplicationFormController::class)->group(function () {
+    Route::get('/applicationForm/list', 'applicationList')->name('applicationForm.applicationList');
+    Route::get('/applicationForm/cancelList', 'cancelList')->name('applicationForm.cancelList');
+    Route::get('/applicationForm/completedList', 'completedList')->name('applicationForm.completedList');
+    Route::get('/applicationForm', 'create')->name('applicationForm.create');
+    Route::post('/applicationForm', 'store')->name('applicationForm.store');
+    Route::get('/applicationForm/{id}', 'show')->name('applicationForm.show');
+    Route::put('/applicationForm', 'update')->name('applicationForm.update');
+    Route::post('/applicationForm/cancel', 'cancel')->name('applicationForm.cancel');
+});
+
+Route::controller(ApplicationManagementController::class)->group(function () {
+    Route::prefix('applicationManagement')->group(function () {
+        Route::get('/list', 'applicationList')->name('applicationManagement.applicationList');
+        Route::get('/cancelList', 'cancelList')->name('applicationManagement.cancelList');
+        Route::get('/completedList', 'completedList')->name('applicationManagement.completedList');
+        Route::post('/approve', 'approve')->name('applicationManagement.approve');
+    });
+});
+
+Route::controller(PickupFormController::class)->group(function () {
+    Route::get('/pickupForm/{id}', 'show')->name('pickupForm.show');
+    Route::post('/pickupForm', 'store')->name('pickupForm.store');
+});
+
+Route::controller(ReturnFormController::class)->group(function () {
+    Route::get('/returnForm/{id}', 'show')->name('returnForm.show');
+    Route::post('/returnForm', 'store')->name('returnForm.store');
 });

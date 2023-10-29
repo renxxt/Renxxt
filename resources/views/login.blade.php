@@ -47,7 +47,7 @@
     @endif
     @if (session()->has('messageData'))
         @foreach (session('messageData') as $messageData)
-            <div class="alert alert-dismissible alert-{{$messageData[ 'type' ]}} col-md-4" role="alert">
+            <div class="alert alert-dismissible alert-{{$messageData['type']}} col-md-4" role="alert">
                 <button type="button" class="close" data-dismiss="alert">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Close</span>

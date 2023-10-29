@@ -20,4 +20,18 @@ class DeviceAttribute extends Model
         'return_form',
         'companion_number'
     ];
+
+    public function pickupForms()
+    {
+        return $this->hasMany(PickupForm::class, 'attributeID', 'attributeID')
+                ->leftJoin('questions AS Q', 'Q.questionID', '=', 'pickupform.questionID')
+                ->orderBy('order', 'asc');
+    }
+
+    public function returnForms()
+    {
+        return $this->hasMany(ReturnForm::class, 'attributeID', 'attributeID')
+                ->leftJoin('questions AS Q', 'Q.questionID', '=', 'returnform.questionID')
+                ->orderBy('order', 'asc');
+    }
 }
