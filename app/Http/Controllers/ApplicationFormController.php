@@ -26,6 +26,43 @@ class ApplicationFormController extends Controller
         $this->applicationForm = $applicationForm;
     }
 
+    public function index()
+    {
+        // $this->lib->adminAccess();
+        $attrResource = new DeviceAttribute();
+        $attributes = $attrResource->list();
+        $date = now()->format('Y-m-d');
+
+        return view('index', ['attributes' => $attributes, 'date' => $date]);
+    }
+
+    public function list(Request $request)
+    {
+        $data = $request->validate([
+            'attributeID' => [ 'required', 'integer' ],
+            'date' => [ 'date_format:Y-m-d' ]
+        ]);
+
+        $data['date'] = isset($data['date']) ? $data['date'] : now()->format('Y-m-d');
+        $data['next'] = date('Y-m-d', strtotime($data['date'] . "+1 day"));
+        $result = $this->applicationForm->list($data);
+        $deviceResource = new Device();
+        $devices = $deviceResource->chartList($data['attributeID']);
+
+        return ['result' => $result, 'devices' => $devices];
+    }
+
+    public function detail(Request $request)
+    {
+        $data = $request->validate([
+            'applicationID' => [ 'required', 'integer' ]
+        ]);
+
+        $result = $this->applicationForm->detail($data['applicationID']);
+
+        return $result;
+    }
+
     public function applicationList()
     {
         $this->lib->adminAccess();

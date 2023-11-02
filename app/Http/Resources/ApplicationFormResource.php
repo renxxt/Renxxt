@@ -3,9 +3,105 @@
 namespace App\Http\Resources;
 
 use App\Models\ApplicationForm;
+use Illuminate\Support\Facades\DB;
 
 class ApplicationFormResource
 {
+    public function list($data)
+    {
+        if ($data['attributeID'] == 0) {
+            $result = ApplicationForm::orderBy('applicationforms.state', 'asc')
+                        ->leftjoin('devices AS D', 'D.deviceID', '=', 'applicationforms.deviceID')
+                        ->leftjoin('deviceattributes AS DA', 'DA.attributeID', '=', 'D.attributeID')
+                        ->where('applicationforms.state', '<', 4)
+                        ->where(function ($query) use ($data) {
+                            $query->where(function ($query) use ($data) {
+                                $query->where('estimated_pickup_time', '>=', $data['date'])
+                                    ->where('estimated_pickup_time', '<', $data['next']);
+                            })
+                            ->orWhere(function ($query) use ($data) {
+                                $query->where('estimated_return_time', '>=', $data['date'])
+                                    ->where('estimated_return_time', '<', $data['next']);
+                            });
+                        })
+                        ->select('applicationforms.*', 'DA.name AS attribute', 'D.name AS device',
+                            DB::raw('CASE
+                                WHEN applicationforms.state = 0 THEN "#FF8A00"
+                                WHEN applicationforms.state = 1 THEN "#048A21"
+                                WHEN applicationforms.state = 2 THEN "#409AED"
+                                ELSE "#A6A6A6"
+                                END AS color'
+                            ),
+                            DB::raw('CONCAT(applicationforms.estimated_pickup_time, " ~ ", applicationforms.estimated_return_time) AS time'),
+                            DB::raw('LEFT(applicationforms.estimated_pickup_time, 4) AS startYear'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 6, 2) AS startMonth'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 9, 2) AS startDay'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 12, 2) AS startHour'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 15, 2) AS startMinute'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 18, 2) AS startSecond'),
+                            DB::raw('LEFT(applicationforms.estimated_return_time, 4) AS endYear'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 6, 2) AS endMonth'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 9, 2) AS endDay'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 12, 2) AS endHour'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 15, 2) AS endMinute'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 18, 2) AS endSecond'),
+                        )->get();
+        } else {
+            $result = ApplicationForm::orderBy('applicationforms.state', 'asc')
+                        ->leftjoin('devices AS D', 'D.deviceID', '=', 'applicationforms.deviceID')
+                        ->leftjoin('deviceattributes AS DA', 'DA.attributeID', '=', 'D.attributeID')
+                        ->where('DA.attributeID', $data['attributeID'])
+                        ->where('applicationforms.state', '<', 4)
+                        ->where(function ($query) use ($data) {
+                            $query->where(function ($query) use ($data) {
+                                $query->where('estimated_pickup_time', '>=', $data['date'])
+                                    ->where('estimated_pickup_time', '<', $data['next']);
+                            })
+                            ->orWhere(function ($query) use ($data) {
+                                $query->where('estimated_return_time', '>=', $data['date'])
+                                    ->where('estimated_return_time', '<', $data['next']);
+                            });
+                        })
+                        ->select('applicationforms.*', 'DA.name AS attribute', 'D.name AS device',
+                                DB::raw('CASE
+                                WHEN applicationforms.state = 0 THEN "#FF8A00"
+                                WHEN applicationforms.state = 1 THEN "#048A21"
+                                WHEN applicationforms.state = 2 THEN "#409AED"
+                                ELSE "#A6A6A6"
+                                END AS color'
+                            ),
+                            DB::raw('CONCAT(applicationforms.estimated_pickup_time, " ~ ", applicationforms.estimated_return_time) AS time'),
+                            DB::raw('LEFT(applicationforms.estimated_pickup_time, 4) AS startYear'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 6, 2) AS startMonth'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 9, 2) AS startDay'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 12, 2) AS startHour'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 15, 2) AS startMinute'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_pickup_time, 18, 2) AS startSecond'),
+                            DB::raw('LEFT(applicationforms.estimated_return_time, 4) AS endYear'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 6, 2) AS endMonth'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 9, 2) AS endDay'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 12, 2) AS endHour'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 15, 2) AS endMinute'),
+                            DB::raw('SUBSTRING(applicationforms.estimated_return_time, 18, 2) AS endSecond'),
+                        )->get();
+        }
+
+        return $result;
+    }
+
+    public function detail($id)
+    {
+        $result = ApplicationForm::where('applicationforms.applicationID', $id)
+                    ->leftjoin('devices AS D', 'D.deviceID', '=', 'applicationforms.deviceID')
+                    ->leftjoin('deviceattributes AS DA', 'DA.attributeID', '=', 'D.attributeID')
+                    ->leftjoin('users AS U', 'U.userID', '=', 'applicationforms.userID')
+                    ->leftjoin('departments AS DE', 'DE.departmentID', '=', 'U.departmentID')
+                    ->select('applicationforms.*', 'DA.name AS attribute', 'D.name AS device', 'DE.department')
+                    ->first();
+
+        return $result;
+    }
+
     public function applicationList($id)
     {
         $result = ApplicationForm::with(['companions:applicationID,U.userID,name,uid', 'approved:applicationID,U.userID,name'])

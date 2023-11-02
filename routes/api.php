@@ -38,6 +38,8 @@ Route::controller(DeviceController::class)->group(function () {
 });
 
 Route::controller(ApplicationFormController::class)->group(function () {
+    Route::post('/list', 'list')->name('api.list');
+    Route::post('/detail', 'detail')->name('api.detail');
     Route::post('/updateReturnTime', 'updateReturnTime')->name('api.updateReturnTime');
 });
 

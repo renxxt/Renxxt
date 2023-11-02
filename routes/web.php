@@ -87,6 +87,7 @@ Route::controller(StagedApplicationFormController::class)->group(function () {
 });
 
 Route::controller(ApplicationFormController::class)->group(function () {
+    Route::get('/renxxt', 'index')->name('renxxt');
     Route::get('/applicationForm/list', 'applicationList')->name('applicationForm.applicationList');
     Route::get('/applicationForm/cancelList', 'cancelList')->name('applicationForm.cancelList');
     Route::get('/applicationForm/completedList', 'completedList')->name('applicationForm.completedList');
