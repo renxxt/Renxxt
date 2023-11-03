@@ -18,6 +18,22 @@ class DeviceResource
         return $result;
     }
 
+    public function chartList($id)
+    {
+        if ($id == 0) {
+            $result = Device::select('name as category')
+                        ->where('display', '<', 2)
+                        ->get();
+        } else {
+            $result = Device::where('attributeID', $id)
+                        ->select('name as category')
+                        ->where('display', '<', 2)
+                        ->get();
+        }
+
+        return $result;
+    }
+
     public function store($data)
     {
         $result = Device::insert([
