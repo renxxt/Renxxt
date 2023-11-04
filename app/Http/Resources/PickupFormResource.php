@@ -15,6 +15,16 @@ class PickupFormResource
         return $result;
     }
 
+    public function answerList($id)
+    {
+        $result = PickupForm::where('attributeID', $id)
+                    ->leftjoin('questions AS Q', 'Q.questionID', '=', 'pickupform.questionID')
+                    ->leftjoin('pickupformanswers AS P', 'P.questionID', '=', 'Q.questionID')
+                    ->get();
+
+        return $result;
+    }
+
     public function store($data)
     {
         $result = PickupForm::insert([

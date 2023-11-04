@@ -48,7 +48,7 @@
             <div class="card collapse" id="collapse{{ $row['applicationID'] }}">
                 <div class="ml-3 mt-3">
                     <ul style="list-style-type: none;">
-                        <h6>屬性名稱：{{ $row['attribute'] }}</h6>
+                        <h6>類別名稱：{{ $row['attribute'] }}</h6>
                         <h6>設備名稱：{{ $row['device'] }}</h6>
                         <h6>使用目的：{{ $row['target'] }}</h6>
                         @if ($row['companion'] == 1)

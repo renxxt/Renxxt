@@ -31,7 +31,7 @@
     <form class="col mt-3">
         <div class="row">
             <select class="form-control col-md-4 mr-2" id="attributeID">
-                <option value="0" selected>全部屬性</option>
+                <option value="0" selected>全部類別</option>
                 @if ($attributes !== false)
                     @foreach ($attributes as $row)
                         <option value="{{ $row['attributeID'] }}">{{ $row['name'] }}</option>
@@ -93,7 +93,8 @@
             type: 'POST',
             data: {
                 attributeID: attributeID,
-                date: date
+                date: date,
+                _token: '{{ csrf_token() }}'
             },
             url: "{{ route('api.list') }}",
             datatype: 'json',
@@ -224,6 +225,7 @@
                             type: 'POST',
                             data: {
                                 applicationID: item.displayValue,
+                                _token: '{{ csrf_token() }}'
                             },
                             url: "{{ route('api.detail') }}",
                             datatype: 'json',
@@ -234,7 +236,7 @@
                                     <h5>${result.uuid}</h5>
                                     <h5>申請人：${result.name}</h5>
                                     <h5>單位：${result.department}</h5>
-                                    <h5>屬性名稱：${result.attribute}</h5>
+                                    <h5>類別名稱：${result.attribute}</h5>
                                     <h5>設備名稱：${result.device}</h5>
                                     <h5>預計使用時間：${result.estimated_pickup_time} ~ ${result.estimated_return_time}</h5>
                                 `;

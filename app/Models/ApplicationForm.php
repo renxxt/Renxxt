@@ -39,4 +39,10 @@ class ApplicationForm extends Model
         return $this->hasOne(ApprovedApplication::class, 'applicationID', 'applicationID')
                 ->leftJoin('users AS U', 'U.userID', '=', 'approvedapplication.approved_userID');
     }
+
+    public function pickupformanswers()
+    {
+        return $this->hasMany(pickupFormAnswer::class, 'applicationID', 'applicationID')
+                ->leftJoin('questions AS Q', 'Q.questionID', '=', 'pickupformanswers.questionID');
+    }
 }

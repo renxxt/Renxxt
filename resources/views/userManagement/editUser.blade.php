@@ -73,10 +73,13 @@
         $('#positionList').change(function() {
             var positionID = $(this).val();
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: "{{ route('api.getUser') }}",
                 dataType: 'json',
-                data: { positionID: positionID },
+                data: {
+                    positionID: positionID,
+                    _token: '{{ csrf_token() }}'
+                },
                 success: function(data) {
                     var oldSuperior = {{ old('superior')===null ? 'null':old('superior') }};
                     if (data !== false) {

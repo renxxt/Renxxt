@@ -21,12 +21,24 @@
     <div class="mr-5 dropdown" style="margin: auto;">
         <a class="bi bi-plus-square" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="{{ route('serviceManagement.attribute.create') }}">新增屬性</a>
+          <a class="dropdown-item" href="{{ route('serviceManagement.attribute.create') }}">新增類別</a>
           <a class="dropdown-item" href="{{ route('serviceManagement.device.create') }}">新增設備</a>
-          <a class="btn dropdown-item" data-toggle="modal" data-target="#createQuestion">新增表單問題</a>
+          <a class="btn dropdown-item" data-toggle="modal" data-target="#createQuestion">新增表單問項</a>
         </div>
     </div>
 </div>
+
+@if (session()->has('messageData'))
+    @foreach (session('messageData') as $messageData)
+        <div class="alert alert-dismissible alert-{{$messageData[ 'type' ]}} col-md-4" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+            </button>
+            <ul>{{ $messageData['message'] }}</ul>
+        </div>
+    @endforeach
+@endif
 
 @if ($attributes !== false)
     @foreach ($attributes as $row)
@@ -51,10 +63,10 @@
                     <li>批准層數：{{ $row['approved_layers'] }}</li>
                     <li>同伴同行人數：{{ $row['companion_number'] }}</li>
                     <li class="mt-2">
-                    @if ($row['pickup_form'] ==1)
+                    @if ($row['pickup_form'] == 1)
                         <button type="button" class="btn" id="pickupForm" style="background-color: #3E517A; color: #FFFFFF" data-attribute-id="{{ $row['attributeID'] }}">取用表單</button>
                     @endif
-                    @if ($row['return_form'] ==1)
+                    @if ($row['return_form'] == 1)
                         <a class="btn btn-success text-white" data-toggle="modal" id="returnForm" data-attribute-id="{{ $row['attributeID'] }}">歸還表單</a>
                     @endif
                     </li>
@@ -84,7 +96,7 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-body">
-                <h3>新增表單問題</h3>
+                <h3>新增表單問項</h3>
                 <input type="text" name="question" class="form-control mt-2" required>
             </div>
             <div class="modal-footer justify-content-center">
@@ -241,7 +253,8 @@
                 dataType: 'json',
                 data: {
                     attributeID: attributeID,
-                    display: display
+                    display: display,
+                    _token: '{{ csrf_token() }}'
                 },
                 success: function(data) {
                     var show = $('#showAttribute[data-id="' + attributeID + '"]');
@@ -274,7 +287,8 @@
                 dataType: 'json',
                 data: {
                     deviceID: deviceID,
-                    display: display
+                    display: display,
+                    _token: '{{ csrf_token() }}'
                 },
                 success: function(data) {
                     var show = $('#showDevice[data-id="' + deviceID + '"]');
@@ -295,6 +309,9 @@
             var dataTable = $('#table'+ attributeID).DataTable();
             $.ajax({
                 type: 'GET',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
                 url: "{{ route('api.device.list') }}",
                 dataType: 'json',
                 data: { attributeID: attributeID },
@@ -313,7 +330,10 @@
                     type: 'POST',
                     url: "{{ route('serviceManagement.question.store') }}",
                     dataType: 'json',
-                    data: { question: question },
+                    data: {
+                        question: question,
+                        _token: '{{ csrf_token() }}'
+                    },
                     success: function(data) {
                         $('#createQuestion').hide();
                         $('#storeSuccessModal').modal('show');
@@ -340,7 +360,7 @@
             if ($(this).is('[data-attr-id]')) {
                 var attributeID = $(this).data('attr-id');
                 var name = $(this).data('attr-name');
-                var type = "設備屬性：";
+                var type = "設備類別：";
                 $('#deleteModal #delete').attr('data-attr-id', attributeID);
             } else if ($(this).is('[data-device-id]')) {
                 var deviceID = $(this).data('device-id');
@@ -387,10 +407,13 @@
         $(document).on('click', '#pickupForm', function() {
             var attributeID = $(this).data('attribute-id');
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: "{{ route('api.pickupForm.list') }}",
                 dataType: 'json',
-                data: { attributeID: attributeID },
+                data: {
+                    attributeID: attributeID,
+                    _token: '{{ csrf_token() }}'
+                },
                 success: function(data) {
                     if (data !== false) {
                         $.each(data, function(index, list) {
@@ -410,10 +433,13 @@
         $(document).on('click', '#returnForm', function() {
             var attributeID = $(this).data('attribute-id');
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: "{{ route('api.returnForm.list') }}",
                 dataType: 'json',
-                data: { attributeID: attributeID },
+                data: {
+                    attributeID: attributeID,
+                    _token: '{{ csrf_token() }}'
+                },
                 success: function(data) {
                     if (data !== false) {
                         $.each(data, function(index, list) {

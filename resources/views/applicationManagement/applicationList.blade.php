@@ -59,7 +59,7 @@
                     <ul style="list-style-type: none;">
                         <h6>申請人：{{ $row['name'] }}</h6>
                         <h6>單位：{{ $row['department'] }}</h6>
-                        <h6>屬性名稱：{{ $row['attribute'] }}</h6>
+                        <h6>類別名稱：{{ $row['attribute'] }}</h6>
                         <h6>設備名稱：{{ $row['device'] }}</h6>
                         <h6>使用目的：{{ $row['target'] }}</h6>
                         @if ($row['companion'] == 1)
@@ -79,6 +79,9 @@
                         @endif
                         @if ($row['state'] > 0)
                             <h6>核准時間：{{ $row['approved']['created_at'] }}</h6>
+                        @endif
+                        @if (count($row['pickupformanswers']) > 0)
+                            <button type="button" class="btn" id="pickupFormAnswer" style="background-color: #3E517A; color: #FFFFFF" data-id="{{ $row['applicationID'] }}">取用表單查看</button>
                         @endif
                     </ul>
                     <div class="btn ml-auto mr-4 mt-auto mb-4">
@@ -111,6 +114,18 @@
     </div>
 </div>
 
+<div class="modal fade text-center" id="pickupModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 class="mb-3">取用表單</h3>
+                <ul class="pickup_list" style="padding: 0;">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function() {
         $(document).on('click', '#approve', function() {
@@ -119,7 +134,8 @@
             $.ajax({
                 type: 'POST',
                 data: {
-                    applicationID: id
+                    applicationID: id,
+                    _token: '{{ csrf_token() }}'
                 },
                 url: "{{ route('applicationManagement.approve') }}",
                 dataType: 'json',
@@ -141,6 +157,35 @@
                 },
             });
         })
+
+        $(document).on('click', '#pickupFormAnswer', function() {
+            var applicationID = $(this).data('id');
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('api.pickupFormAnswer.list') }}",
+                dataType: 'json',
+                data: {
+                    applicationID: applicationID,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    if (data !== false) {
+                        $.each(data, function(index, list) {
+                            if (list.answer_text == null) {
+                                list.answer_text = "---";
+                            }
+                            var listItem = $('<li class="list-group-item list-group-item-primary">' + list.question + '：' + list.answer_text + '</li>');
+                            $('.pickup_list').append(listItem);
+                        });
+                    }
+                }
+            });
+            $('#pickupModal').modal('show');
+        })
+
+        $('#pickupModal').on('hide.bs.modal', function () {
+            $('.pickup_list').empty();
+        });
     })
 </script>
 @endsection

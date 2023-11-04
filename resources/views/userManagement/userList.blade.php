@@ -13,6 +13,19 @@
 </style>
 
 <h2 style="margin-left: 20px;">人員管理</h2>
+
+@if (session()->has('messageData'))
+    @foreach (session('messageData') as $messageData)
+        <div class="alert alert-dismissible alert-{{$messageData[ 'type' ]}} col-md-4" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+            </button>
+            <ul>{{ $messageData['message'] }}</ul>
+        </div>
+    @endforeach
+@endif
+
 <div class="row">
     <div class="col-md-4" style="margin-left: 20px;">
         <a href="{{ route('userManagement.create') }}" class="btn" style="background-color: #3E517A; color:#FFFFFF;">新增人員</a>
@@ -140,7 +153,10 @@
 
         function loadData(dataTable) {
             $.ajax({
-                type: 'GET',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
                 url: "{{ route('api.getUser') }}",
                 dataType: 'json',
                 success: function(data) {
@@ -155,7 +171,10 @@
             var departmentID = $(this).val();
             var dataTable = $('#table').DataTable();
             $.ajax({
-                type: 'GET',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
                 url: "{{ route('api.getUser') }}",
                 dataType: 'json',
                 data: { departmentID: departmentID },

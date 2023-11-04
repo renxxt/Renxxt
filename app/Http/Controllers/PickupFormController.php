@@ -32,8 +32,28 @@ class PickupFormController extends Controller
         return $pickupData;
     }
 
+    public function answerList(Request $request)
+    {
+        $data = $request->validate([
+            'applicationID' => [
+                'required',
+                'integer'
+            ]
+        ]);
+
+        $resource = new ApplicationForm();
+        $attribute = $resource->getAttributeID($data['applicationID']);
+        $answerData =$this->pickupForm->answerList($attribute['attributeID']);
+        return $answerData;
+    }
+
     public function show($id)
     {
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $resource = new ApplicationForm();
         $data = $resource->getAttributeID($id);
         if ($data['pickup_form'] == 0) {
@@ -44,12 +64,24 @@ class PickupFormController extends Controller
             return redirect()->route('applicationForm.applicationList');
         }
         $result = $this->pickupForm->show($data['attributeID']);
+        if (!$result) {
+            $messageData = [
+                'type' => "danger",
+                'message' => "無該取用表單"
+            ];
+            return redirect()->route('applicationForm.applicationList')->with('messageData', [$messageData]);
+        }
 
         return view('applicationForm.form', ['applicationID' => $id, 'state' => $data['state'], 'result' => $result]);
     }
 
     public function store(Request $request)
     {
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'applicationID' => [ 'required', 'integer' ]
         ]);

@@ -25,6 +25,18 @@
     </div>
 </div>
 
+@if (session()->has('messageData'))
+    @foreach (session('messageData') as $messageData)
+        <div class="alert alert-dismissible alert-{{$messageData['type']}} col-md-4" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+            </button>
+            <ul>{{ $messageData['message'] }}</ul>
+        </div>
+    @endforeach
+@endif
+
 <ul class="nav nav-tabs nav-fill mt-4">
     <li class="nav-item">
         <a class="nav-link active" href="{{ route('applicationForm.applicationList') }}" style="background-color: #3E517A; color: #FFFFFF;">預借申請</a>
@@ -64,7 +76,7 @@
             <div class="card collapse" id="collapse{{ $row['applicationID'] }}">
                 <div class="ml-3 mt-3 row">
                     <ul style="list-style-type: none;">
-                        <h6>屬性名稱：{{ $row['attribute'] }}</h6>
+                        <h6>類別名稱：{{ $row['attribute'] }}</h6>
                         <h6>設備名稱：{{ $row['device'] }}</h6>
                         <h6>使用目的：{{ $row['target'] }}</h6>
                         @if ($row['companion'] == 1)
@@ -84,6 +96,9 @@
                         @endif
                         @if ($row['state'] > 0)
                             <h6>核准主管：{{ $row['approved']['name'] }}</h6>
+                        @endif
+                        @if (count($row['pickupformanswers']) > 0)
+                            <button type="button" class="btn" id="pickupFormAnswer" style="background-color: #3E517A; color: #FFFFFF" data-id="{{ $row['applicationID'] }}">取用表單查看</button>
                         @endif
                     </ul>
                     <div class="btn ml-auto mr-4 mt-auto mb-4">
@@ -150,6 +165,18 @@
     </div>
 </div>
 
+<div class="modal fade text-center" id="pickupModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 class="mb-3">取用表單</h3>
+                <ul class="pickup_list" style="padding: 0;">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function() {
         $(document).on('click', '.cancelCheck', function() {
@@ -175,7 +202,8 @@
                     type: 'POST',
                     data: {
                         applicationID: id,
-                        result: result
+                        result: result,
+                        _token: '{{ csrf_token() }}'
                     },
                     url: "{{ route('applicationForm.cancel') }}",
                     dataType: 'json',
@@ -236,7 +264,8 @@
                     type: 'POST',
                     data: {
                         applicationID: id,
-                        extend_time: extend_time
+                        extend_time: extend_time,
+                        _token: '{{ csrf_token() }}'
                     },
                     url: "{{ route('api.updateReturnTime') }}",
                     dataType: 'json',
@@ -265,6 +294,35 @@
                 });
             }
         })
+
+        $(document).on('click', '#pickupFormAnswer', function() {
+            var applicationID = $(this).data('id');
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('api.pickupFormAnswer.list') }}",
+                dataType: 'json',
+                data: {
+                    applicationID: applicationID,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    if (data !== false) {
+                        $.each(data, function(index, list) {
+                            if (list.answer_text == null) {
+                                list.answer_text = "---";
+                            }
+                            var listItem = $('<li class="list-group-item list-group-item-primary">' + list.question + '：' + list.answer_text + '</li>');
+                            $('.pickup_list').append(listItem);
+                        });
+                    }
+                }
+            });
+            $('#pickupModal').modal('show');
+        })
+
+        $('#pickupModal').on('hide.bs.modal', function () {
+            $('.pickup_list').empty();
+        });
     })
 </script>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\StagedApplicationForm;
+use App\Models\StagedApplicationCompanion;
 use Illuminate\Support\Facades\Auth;
 
 class StagedApplicationFormResource
@@ -16,7 +17,7 @@ class StagedApplicationFormResource
                     ->select('A.name AS attribute', 'D.name AS device', 'stagedapplicationforms.applicationID', 'stagedapplicationforms.estimated_pickup_time', 'stagedapplicationforms.estimated_return_time')
                     ->get();
         } else {
-            $userID = Auth::user()->id;
+            $userID = Auth::user()->userID;
             $result = StagedApplicationForm::with('companions:applicationID,U.userID')
                     ->where('stagedapplicationforms.userID', $userID)
                     ->leftjoin('devices AS D', 'D.deviceID', '=', 'stagedapplicationforms.deviceID')
@@ -72,6 +73,18 @@ class StagedApplicationFormResource
     public function delete($id)
     {
         $result = StagedApplicationForm::where('applicationID', $id)->delete();
+
+        return $result;
+    }
+
+    public function filter($id)
+    {
+        $idsToDelete = StagedApplicationForm::where('userID', $id)
+                        ->where('estimated_pickup_time', '<', now())
+                        ->pluck('applicationID');
+
+        StagedApplicationCompanion::whereIn('applicationID', $idsToDelete)->delete();
+        $result = StagedApplicationForm::whereIn('applicationID', $idsToDelete)->delete();
 
         return $result;
     }

@@ -56,18 +56,19 @@
             </div>
         @endforeach
     @endif
-    <div class="card text-center col-md-4">
-		<form method="POST" action="{{ route('login') }}" class="mt-4">
-			@csrf
+    <div class="card text-center col-md-4 mt-auto mb-auto">
+        <form method="POST" action="{{ route('login') }}" class="mt-4">
+            @csrf
             <div class="form-group">
-				<input type="email" name="email" class="form-control" placeholder="輸入信箱">
-			</div>
-			<div class="form-group">
-				<input type="password" name="password" class="form-control" placeholder="輸入密碼">
-			</div>
+                <input type="email" name="email" class="form-control" placeholder="輸入信箱">
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" class="form-control" placeholder="輸入密碼">
+            </div>
             <a href="{{ route('forgetPwd') }}" style="font-size: small; margin-left: 58%; color: #3E517A;">忘記密碼</a>
-			<div>
-				<input type="submit" name="submit" class="btn" value="登入" style="background-color: #3E517A; color: white;">
-			</div>
-		</form>
-	</div>
+            <div>
+                <input type="submit" name="submit" class="btn" value="登入" style="background-color: #3E517A; color: white;">
+            </div>
+        </form>
+    </div>
+

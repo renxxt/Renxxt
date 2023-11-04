@@ -37,10 +37,10 @@
         </div>
     </div>
     <div class="row mt-3">
-        <label class="col-sm-2 col-form-label">設備屬性</label>
+        <label class="col-sm-2 col-form-label">設備類別</label>
         <div class="col-sm-10">
             <select name="attributeID" class="form-control">
-                <option disabled selected>請選擇設備屬性</option>
+                <option disabled selected>請選擇設備類別</option>
                 @if ($attributes !== false)
                     @foreach ($attributes as $row)
                         <option value="{{ $row['attributeID'] }}" {{ old('attributeID') == $row['attributeID'] ? 'selected' : '' }}>{{ $row['name'] }}</option>
