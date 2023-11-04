@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\DeviceAttributeController;
 use App\Http\Controllers\DeviceController;
@@ -107,12 +108,12 @@ Route::controller(ApplicationManagementController::class)->group(function () {
     });
 });
 
-Route::controller(PickupFormController::class)->group(function () {
+Route::controller(PickupFormController::class)->middleware('auth')->group(function () {
     Route::get('/pickupForm/{id}', 'show')->name('pickupForm.show');
     Route::post('/pickupForm', 'store')->name('pickupForm.store');
 });
 
-Route::controller(ReturnFormController::class)->group(function () {
+Route::controller(ReturnFormController::class)->middleware('auth')->group(function () {
     Route::get('/returnForm/{id}', 'show')->name('returnForm.show');
     Route::post('/returnForm', 'store')->name('returnForm.store');
 });

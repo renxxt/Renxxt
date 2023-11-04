@@ -50,10 +50,10 @@
             </div>
         </div>
         <div class="row mt-3">
-            <label class="col-sm-2 col-form-label">屬性</label>
+            <label class="col-sm-2 col-form-label">類別</label>
             <div class="col-sm-10">
                 <select id="attributeID" name="attributeID" class="form-control">
-                    <option disabled selected>請選擇屬性</option>
+                    <option disabled selected>請選擇類別</option>
                     @if ($attributes !== false)
                         @foreach ($attributes as $row)
                             <option value="{{ $row['attributeID'] }}" {{ $result['attributeID'] == $row['attributeID'] ? 'selected' : '' }}>{{ $row['name'] }}</option>
@@ -209,7 +209,8 @@
                     estimated_pickup_time: pickupTime,
                     estimated_return_time: returnTime,
                     attributeID: attributeID,
-                    applicationID: applicationID
+                    applicationID: applicationID,
+                    _token: '{{ csrf_token() }}'
                 },
                 success: function(data) {
                     if (data !== false) {
@@ -221,7 +222,7 @@
                     }
                 },
                 error: function(data) {
-                    $('#device').append('<option>此時段暫無該屬性可預借的設備</option>');
+                    $('#device').append('<option>此時段暫無該類別可預借的設備</option>');
                 }
             });
         }

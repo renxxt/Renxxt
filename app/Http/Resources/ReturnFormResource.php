@@ -15,6 +15,16 @@ class ReturnFormResource
         return $result;
     }
 
+    public function answerList($id)
+    {
+        $result = ReturnForm::where('attributeID', $id)
+                    ->leftjoin('questions AS Q', 'Q.questionID', '=', 'returnform.questionID')
+                    ->leftjoin('returnformanswers AS P', 'P.questionID', '=', 'Q.questionID')
+                    ->get();
+
+        return $result;
+    }
+
     public function store($data)
     {
         $result = ReturnForm::insert([

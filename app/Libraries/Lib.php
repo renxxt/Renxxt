@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Session;
 
 class Lib
@@ -12,6 +13,7 @@ class Lib
     public function __construct()
     {
         $this->maxOrder = DB::table('positions')->max('order');
+        View::share('maxOrder', $this->maxOrder);
     }
 
     protected static function getFacadeAccessor()
@@ -25,7 +27,7 @@ class Lib
         if (session('order') == 1) {
             //
         } else {
-            return redirect()->route('login');
+            return redirect()->route('renxxt');
         }
     }
 
@@ -35,17 +37,17 @@ class Lib
         if (session('order') > 1 && session('order') < $this->maxOrder) {
             //
         } else {
-            return redirect()->route('login');
+            return redirect()->route('renxxt');
         }
     }
 
     # 一般使用者
     public function userAccess()
     {
-        if (session('order') == $this->maxOrder) {
+        if (session('order') > 1) {
             //
         } else {
-            return redirect()->route('login');
+            return redirect()->route('renxxt');
         }
     }
 }

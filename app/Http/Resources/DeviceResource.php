@@ -121,6 +121,7 @@ class DeviceResource
     public function getDevices($data)
     {
         $result = Device::where('attributeID', $data['attributeID'])
+                    ->where('display', 0)
                     ->select('devices.*')
                     ->whereNotIn('devices.deviceID', function ($query) use ($data) {
                         $query->select('A.deviceID')

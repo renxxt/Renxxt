@@ -22,7 +22,6 @@ class DeviceController extends Controller
 
     public function list(Request $request)
     {
-        $this->lib->adminAccess();
         $data = $request->validate([
             'attributeID' => [
                 'required',
@@ -36,7 +35,11 @@ class DeviceController extends Controller
 
     public function create()
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $resource = new DeviceAttribute();
         $attributes = $resource->list();
 
@@ -45,23 +48,27 @@ class DeviceController extends Controller
 
     public function store(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'name' => [
                 'required',
                 'string',
                 Rule::unique('devices')
             ],
-            'type' => ['required', 'string'],
-            'attributeID' => ['required', 'integer'],
+            'type' => [ 'required', 'string' ],
+            'attributeID' => [ 'required', 'integer' ],
             'uid' => [
                 'required',
                 'string',
                 'exists:users,uid,state,0'
             ],
-            'storage_location' => ['required', 'string'],
-            'price' => ['required', 'integer'],
-            'display' => ['string']
+            'storage_location' => [ 'required', 'string' ],
+            'price' => [ 'required', 'integer' ],
+            'display' => [ 'string' ]
         ]);
         $data['display'] = (isset($data['display']) && $data['display'] == 'on') ? 1 : 0;
         $userResource = new User();
@@ -74,35 +81,50 @@ class DeviceController extends Controller
 
     public function show($id)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $resource = new DeviceAttribute();
         $attributes = $resource->list();
         $result = $this->device->show($id);
+        if (!$result) {
+            $messageData = [
+                'type' => "danger",
+                'message' => "無該設備"
+            ];
+            return redirect()->route('serviceManagement.list')->with('messageData', [$messageData]);
+        }
 
         return view('serviceManagement.editDevice', ['result' => $result, 'attributes' => $attributes]);
     }
 
     public function update(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $deviceID = $request->input('deviceID');
         $data = $request->validate([
-            'deviceID' => ['required', 'integer'],
+            'deviceID' => [ 'required', 'integer' ],
             'name' => [
                 'required',
                 'string',
                 Rule::unique('devices')->ignore($deviceID, 'deviceID')
             ],
-            'type' => ['required', 'string'],
-            'attributeID' => ['required', 'integer'],
+            'type' => [ 'required', 'string' ],
+            'attributeID' => [ 'required', 'integer' ],
             'uid' => [
                 'required',
                 'string',
                 'exists:users,uid,state,0'
             ],
-            'storage_location' => ['required', 'string'],
-            'price' => ['required', 'integer'],
-            'display' => ['string']
+            'storage_location' => [ 'required', 'string' ],
+            'price' => [ 'required', 'integer' ],
+            'display' => [ 'string' ]
         ]);
         $data['display'] = (isset($data['display']) && $data['display'] == 'on') ? 1 : 0;
         $resource = new User();
@@ -115,9 +137,13 @@ class DeviceController extends Controller
 
     public function delete(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
-            'id' => ['required']
+            'id' => [ 'required', 'integer' ]
         ]);
         $result = $this->device->delete($data['id']);
 
@@ -126,10 +152,14 @@ class DeviceController extends Controller
 
     public function changeDisplay(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
-            'deviceID' => ['required', 'integer'],
-            'display' => ['required', 'integer']
+            'deviceID' => [ 'required', 'integer' ],
+            'display' => [ 'required', 'integer' ]
         ]);
 
         $result = $this->device->changeDisplay($data);
@@ -141,8 +171,16 @@ class DeviceController extends Controller
         $data = $request->validate([
             'applicationID' => [ 'integer' ],
             'attributeID' => [ 'required', 'integer' ],
-            'estimated_pickup_time' => [ 'required' ],
-            'estimated_return_time' => [ 'required' ]
+            'estimated_pickup_time' => [
+                'required',
+                'date_format:Y-m-d H:i',
+                'before:estimated_return_time'
+            ],
+            'estimated_return_time' => [
+                'required',
+                'date_format:Y-m-d H:i',
+                'after:estimated_pickup_time'
+            ]
         ]);
 
         if (isset($data['applicationID'])) {

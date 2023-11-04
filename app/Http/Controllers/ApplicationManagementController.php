@@ -21,8 +21,12 @@ class ApplicationManagementController extends Controller
 
     public function applicationList()
     {
-        $this->lib->adminAccess();
-        $userID = Auth::user()->id;
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $userID = Auth::user()->userID;
         $result = $this->applicationManagement->applicationList($userID);
 
         return view('applicationManagement.applicationList', ['result' => $result]);
@@ -30,8 +34,12 @@ class ApplicationManagementController extends Controller
 
     public function cancelList()
     {
-        $this->lib->adminAccess();
-        $userID = Auth::user()->id;
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $userID = Auth::user()->userID;
         $result = $this->applicationManagement->cancelList($userID);
 
         return view('applicationManagement.cancelList', ['result' => $result]);
@@ -39,8 +47,12 @@ class ApplicationManagementController extends Controller
 
     public function completedList()
     {
-        $this->lib->adminAccess();
-        $userID = Auth::user()->id;
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $userID = Auth::user()->userID;
         $result = $this->applicationManagement->completedList($userID);
 
         return view('applicationManagement.completedList', ['result' => $result]);
@@ -48,11 +60,15 @@ class ApplicationManagementController extends Controller
 
     public function approve(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'applicationID' =>  [ 'required', 'integer' ]
         ]);
-        $data['userID'] = Auth::user()->id;
+        $data['userID'] = Auth::user()->userID;
         $data['state'] = 1;
 
         $resource = new ApprovedApplication();

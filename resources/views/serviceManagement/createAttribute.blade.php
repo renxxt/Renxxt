@@ -24,7 +24,7 @@
     }
 </style>
 
-<h2 style="margin-left: 20px;">新增屬性</h2>
+<h2 style="margin-left: 20px;">新增類別</h2>
 
 @if($errors->any())
     <div class="alert alert-dismissible alert-danger" role="alert">
@@ -42,7 +42,7 @@
     @csrf
     <div id="originalForm">
         <div class="row">
-            <label class="col-sm-2 col-form-label">屬性名字</label>
+            <label class="col-sm-2 col-form-label">類別名字</label>
             <div class="col-sm-10">
                 <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
             </div>
@@ -154,6 +154,9 @@
                 }
                 $.ajax({
                     type: 'GET',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
                     url: "{{ route('api.getQuestion') }}",
                     dataType: 'json',
                     success: function(data) {
@@ -236,6 +239,9 @@
                 }
                 $.ajax({
                     type: 'GET',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
                     url: "{{ route('api.getQuestion') }}",
                     dataType: 'json',
                     success: function(data) {

@@ -28,7 +28,6 @@ class ApplicationFormController extends Controller
 
     public function index()
     {
-        // $this->lib->adminAccess();
         $attrResource = new DeviceAttribute();
         $attributes = $attrResource->list();
         $date = now()->format('Y-m-d');
@@ -65,8 +64,12 @@ class ApplicationFormController extends Controller
 
     public function applicationList()
     {
-        $this->lib->adminAccess();
-        $userID = Auth::user()->id;
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $userID = Auth::user()->userID;
         $result = $this->applicationForm->applicationList($userID);
 
         return view('applicationForm.applicationList', ['result' => $result]);
@@ -74,8 +77,12 @@ class ApplicationFormController extends Controller
 
     public function cancelList()
     {
-        $this->lib->adminAccess();
-        $userID = Auth::user()->id;
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $userID = Auth::user()->userID;
         $result = $this->applicationForm->cancelList($userID);
 
         return view('applicationForm.cancelList', ['result' => $result]);
@@ -83,8 +90,12 @@ class ApplicationFormController extends Controller
 
     public function completedList()
     {
-        $this->lib->adminAccess();
-        $userID = Auth::user()->id;
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $userID = Auth::user()->userID;
         $result = $this->applicationForm->completedList($userID);
 
         return view('applicationForm.completedList', ['result' => $result]);
@@ -92,11 +103,16 @@ class ApplicationFormController extends Controller
 
     public function create()
     {
-        $this->lib->adminAccess();
-        $userID = Auth::user()->id;
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $userID = Auth::user()->userID;
         $resource = new DeviceAttribute();
         $attributes = $resource->list();
         $stagedResource = new stagedApplicationForm();
+        $stagedResource->filter($userID);
         $stagedList = $stagedResource->list($userID);
 
         return view('applicationForm.createForm', ['attributes' => $attributes, 'stagedList' => $stagedList]);
@@ -104,7 +120,11 @@ class ApplicationFormController extends Controller
 
     public function store()
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $stagedResource = new StagedApplicationForm();
         $list = $stagedResource->list();
         if (count($list) == 0) {
@@ -149,8 +169,20 @@ class ApplicationFormController extends Controller
 
     public function show($id)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $result = $this->applicationForm->show($id);
+        if (!$result) {
+            $messageData = [
+                'type' => "danger",
+                'message' => "無該預借申請"
+            ];
+            return redirect()->route('applicationForm.applicationList')->with('messageData', [$messageData]);
+        }
+
         $attributeResource = new DeviceAttribute();
         $attributes = $attributeResource->list();
         $deviceResource = new device();
@@ -161,15 +193,27 @@ class ApplicationFormController extends Controller
 
     public function update(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'applicationID' =>  [ 'required', 'integer' ],
             'deviceID' => [ 'required', 'integer' ],
-            'estimated_pickup_time' => [ 'required' ],
-            'estimated_return_time' => [ 'required' ],
+            'estimated_pickup_time' => [
+                'required',
+                'date_format:Y-m-d H:i',
+                'before:estimated_return_time'
+            ],
+            'estimated_return_time' => [
+                'required',
+                'date_format:Y-m-d H:i',
+                'after:estimated_pickup_time'
+            ],
             'target' => [ 'required', 'string' ]
         ]);
-        $data['userID'] = Auth::user()->id;
+        $data['userID'] = Auth::user()->userID;
         $companion = array_filter($request->input('companion'), function ($value) {
             return $value !== null;
         });
@@ -215,7 +259,11 @@ class ApplicationFormController extends Controller
 
     public function cancel(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'applicationID' => [ 'required', 'integer' ],
             'result' => [ 'required', 'string' ]
@@ -231,10 +279,12 @@ class ApplicationFormController extends Controller
 
     public function updateReturnTime(Request $request)
     {
-        $this->lib->adminAccess();
         $data = $request->validate([
             'applicationID' => [ 'required', 'integer' ],
-            'extend_time' => [ 'required' ]
+            'extend_time' => [
+                'required',
+                'date_format:Y-m-d H:i'
+            ]
         ]);
 
         $details = $this->applicationForm->getCheckData($data['applicationID']);

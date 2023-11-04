@@ -25,14 +25,27 @@ class StagedApplicationFormController extends Controller
 
     public function store(Request $request)
     {
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'applicationID' =>  [ 'integer' ],
             'deviceID' => [ 'required', 'integer' ],
-            'estimated_pickup_time' => [ 'required', 'after:estimated_return_time' ],
-            'estimated_return_time' => [ 'required', 'before:estimated_pickup_time' ],
+            'estimated_pickup_time' => [
+                'required',
+                'date_format:Y-m-d H:i',
+                'before:estimated_return_time'
+            ],
+            'estimated_return_time' => [
+                'required',
+                'date_format:Y-m-d H:i',
+                'after:estimated_pickup_time'
+            ],
             'target' => [ 'required', 'string' ]
         ]);
-        $data['userID'] = Auth::user()->id;
+        $data['userID'] = Auth::user()->userID;
         $companion = array_filter($request->input('companion'), function ($value) {
             return $value !== null;
         });
@@ -80,6 +93,11 @@ class StagedApplicationFormController extends Controller
 
     public function show(Request $request)
     {
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'applicationID' => [ 'required', 'integer' ]
         ]);
@@ -92,6 +110,11 @@ class StagedApplicationFormController extends Controller
 
     public function delete(Request $request)
     {
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'applicationID' => [ 'required', 'integer' ]
         ]);

@@ -104,7 +104,7 @@ class ApplicationFormResource
 
     public function applicationList($id)
     {
-        $result = ApplicationForm::with(['companions:applicationID,U.userID,name,uid', 'approved:applicationID,U.userID,name'])
+        $result = ApplicationForm::with(['companions:applicationID,U.userID,name,uid', 'approved:applicationID,U.userID,name', 'pickupformanswers:*'])
                     ->where('applicationforms.userID', $id)
                     ->where('applicationforms.state', '<', 3)
                     ->orderBy('applicationforms.state', 'asc')
@@ -136,7 +136,7 @@ class ApplicationFormResource
                     ->where('applicationforms.state', 3)
                     ->leftjoin('devices AS D', 'D.deviceID', '=', 'applicationforms.deviceID')
                     ->leftjoin('deviceattributes AS DA', 'DA.attributeID', '=', 'D.attributeID')
-                    ->select('applicationforms.*', 'DA.name AS attribute', 'D.name AS device')
+                    ->select('applicationforms.*', 'DA.name AS attribute', 'D.name AS device', 'DA.pickup_form', 'DA.return_form')
                     ->get();
 
         return $result;

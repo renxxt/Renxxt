@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::controller(UserManagementController::class)->group(function () {
-    Route::get('/getUser', 'getUser')->name('api.getUser');
+    Route::post('/getUser', 'getUser')->name('api.getUser');
 });
 
 Route::controller(QuestionController::class)->group(function () {
@@ -44,9 +44,12 @@ Route::controller(ApplicationFormController::class)->group(function () {
 });
 
 Route::controller(PickupFormController::class)->group(function () {
-    Route::get('/pickupForm/list', 'list')->name('api.pickupForm.list');
+    Route::post('/pickupForm/list', 'list')->name('api.pickupForm.list');
+    Route::post('/pickupFormAnswer/list', 'answerList')->name('api.pickupFormAnswer.list');
 });
 
 Route::controller(ReturnFormController::class)->group(function () {
-    Route::get('/returnForm/list', 'list')->name('api.returnForm.list');
+    Route::post('/returnForm/list', 'list')->name('api.returnForm.list');
+    Route::post('/returnFormAnswer/list', 'answerList')->name('api.returnFormAnswer.list');
 });
+

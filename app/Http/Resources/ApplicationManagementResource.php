@@ -8,7 +8,7 @@ class ApplicationManagementResource
 {
     public function applicationList($id)
     {
-        $result = ApplicationForm::with(['companions:applicationID,U.userID,name,uid', 'approved:applicationID,U.userID,approvedapplication.created_at'])
+        $result = ApplicationForm::with(['companions:applicationID,U.userID,name,uid', 'approved:applicationID,U.userID,approvedapplication.created_at', 'pickupformanswers:*'])
                     ->where('applicationforms.state', '<', 3)
                     ->orderBy('applicationforms.state', 'asc')
                     ->leftjoin('users AS U', 'U.userID', '=', 'applicationforms.userID')
@@ -53,7 +53,7 @@ class ApplicationManagementResource
                     ->leftjoin('departments AS DP', 'DP.departmentID', '=', 'U.departmentID')
                     ->leftjoin('devices AS D', 'D.deviceID', '=', 'applicationforms.deviceID')
                     ->leftjoin('deviceattributes AS DA', 'DA.attributeID', '=', 'D.attributeID')
-                    ->select('applicationforms.*', 'DA.name AS attribute', 'D.name AS device', 'U.name', 'DP.department')
+                    ->select('applicationforms.*', 'DA.name AS attribute', 'D.name AS device', 'U.name', 'DP.department', 'DA.pickup_form', 'DA.return_form')
                     ->whereIn('applicationforms.userID', function ($query) use ($id) {
                         $query->select('U.userID')
                             ->from('users as U')

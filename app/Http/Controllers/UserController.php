@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Libraries\Lib;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -12,10 +13,12 @@ use App\Http\Resources\UserResource AS User;
 
 class UserController extends Controller
 {
+    protected $lib;
     protected $user;
 
-    public function __construct(User $user)
+    public function __construct(Lib $lib, User $user)
     {
+        $this->lib = $lib;
         $this->user = $user;
     }
 
@@ -54,7 +57,8 @@ class UserController extends Controller
 
             Auth::login($user);
             session()->put('order', $user['order']);
-            return redirect()->route('userManagement.list');
+
+            return redirect()->route('renxxt');
         } else {
             return view('login');
         }
@@ -120,6 +124,14 @@ class UserController extends Controller
 
     public function verify($id, $hash)
     {
+        if (!is_numeric($id)) {
+            $messageData = [
+                'type' => "danger",
+                'message' => "連結驗證失敗"
+            ];
+            return redirect()->route('login')->with('messageData', [$messageData]);
+        }
+
         return view('resetPwd', ['id' => $id, 'hash' => $hash]);
     }
 
@@ -165,8 +177,13 @@ class UserController extends Controller
         return back()->with('messageData', [$messageData]);
     }
 
-    public function profile(Request $request)
+    public function profile()
     {
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = [];
         $data['userID'] = Auth::user()->userID;
         $result = $this->user->list($data);
@@ -176,6 +193,11 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
+        $access = $this->lib->userAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $userID = $request->input('userID');
         $data = $request->validate([
             'userID' => [ 'required', 'integer' ],

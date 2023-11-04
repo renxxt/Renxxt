@@ -98,10 +98,10 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <label class="col-sm-2 col-form-label">屬性</label>
+                <label class="col-sm-2 col-form-label">類別</label>
                 <div class="col-sm-10">
                     <select id="attributeID" name="attributeID" class="form-control">
-                        <option disabled selected>請選擇屬性</option>
+                        <option disabled selected>請選擇類別</option>
                         @if ($attributes !== false)
                             @foreach ($attributes as $row)
                                 <option value="{{ $row['attributeID'] }}">{{ $row['name'] }}</option>
@@ -273,7 +273,8 @@
                 data: {
                     estimated_pickup_time: pickupTime,
                     estimated_return_time: returnTime,
-                    attributeID: attributeID
+                    attributeID: attributeID,
+                    _token: '{{ csrf_token() }}'
                 },
                 success: function(data) {
                     if (data !== false) {
@@ -285,7 +286,7 @@
                     }
                 },
                 error: function(data) {
-                    $('#device').append('<option>此時段暫無該屬性可預借的設備</option>');
+                    $('#device').append('<option>此時段暫無該類別可預借的設備</option>');
                 }
             });
         }
@@ -305,7 +306,10 @@
                 type: 'DELETE',
                 url: "{{ route('staged.delete') }}",
                 dataType: 'json',
-                data: { applicationID: applicationID },
+                data: {
+                    applicationID: applicationID,
+                    _token: '{{ csrf_token() }}'
+                },
                 success: function(data) {
                     item.remove();
                 }
@@ -321,7 +325,10 @@
                 type: 'POST',
                 url: "{{ route('staged.show') }}",
                 dataType: 'json',
-                data: { applicationID: applicationID },
+                data: {
+                    applicationID: applicationID,
+                    _token: '{{ csrf_token() }}'
+                },
                 success: function(data) {
                     result = data['result'];
                     deviceList = data['deviceList'];
@@ -343,7 +350,7 @@
                             $('#device').append(listItem);
                         });
                     } else {
-                        $('#device').append('<option>此時段暫無該屬性可預借的設備</option>');
+                        $('#device').append('<option>此時段暫無該類別可預借的設備</option>');
                     }
 
                     if (boo == false) {
@@ -377,6 +384,9 @@
         $(document).on('click', '#storeForm', function() {
             $.ajax({
                 type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
                 url: "{{ route('applicationForm.store') }}",
                 dataType: 'json',
                 success: function(data) {

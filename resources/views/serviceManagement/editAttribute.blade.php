@@ -24,7 +24,7 @@
     }
 </style>
 
-<h2 style="margin-left: 20px;">修改屬性</h2>
+<h2 style="margin-left: 20px;">修改類別</h2>
 
 @if($errors->any())
     <div class="alert alert-dismissible alert-danger" role="alert">
@@ -44,7 +44,7 @@
     @if ($result !== false)
         <div id="originalForm">
             <div class="row">
-                <label class="col-sm-2 col-form-label">屬性名字</label>
+                <label class="col-sm-2 col-form-label">類別名字</label>
                 <div class="col-sm-10">
                     <input type="text" name="name" class="form-control" value="{{ $result['name'] }}" required>
                 </div>
@@ -127,8 +127,8 @@
             <div style="margin: 25px;">
                 <h2>取用表單</h2>
                 <ul class="pickupList">
-                    @if ($result['pickup_form'] == 1)
-                        @foreach ($result['pickup_forms'] as $row)
+                    @if (!empty($result['pickupForms']))
+                        @foreach ($result['pickupForms'] as $row)
                             <li class="list-group-item">
                                 <input class="form-check-input" name="pickupQuestion[]" type="checkbox" value="{{ $row['questionID'] }}" {{ $row['required'] === null ? '' : 'checked' }}>
                                 <label class="form-check-label mr-3">{{ $row['question'] }}</label>
@@ -149,8 +149,8 @@
             <div style="margin: 25px;">
                 <h2>歸還表單</h2>
                 <ul class="returnList">
-                    @if ($result['return_form'] == 1)
-                        @foreach ($result['return_forms'] as $row)
+                    @if (!empty($result['returnForms']))
+                        @foreach ($result['returnForms'] as $row)
                             <li class="list-group-item">
                                 <input class="form-check-input" name="returnQuestion[]" type="checkbox" value="{{ $row['questionID'] }}" {{ $row['required'] === null ? '' : 'checked' }}>
                                 <label class="form-check-label mr-3">{{ $row['question'] }}</label>
@@ -187,6 +187,9 @@
                 }
                 $.ajax({
                     type: 'GET',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
                     url: "{{ route('api.getQuestion') }}",
                     dataType: 'json',
                     success: function(data) {
@@ -270,6 +273,9 @@
                 }
                 $.ajax({
                     type: 'GET',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
                     url: "{{ route('api.getQuestion') }}",
                     dataType: 'json',
                     success: function(data) {

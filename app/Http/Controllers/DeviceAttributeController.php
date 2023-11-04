@@ -22,7 +22,10 @@ class DeviceAttributeController extends Controller
 
     public function list()
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
         $attributes = $this->deviceAttribute->list();
 
         return view('serviceManagement.serviceManagement', ['attributes' => $attributes]);
@@ -30,26 +33,33 @@ class DeviceAttributeController extends Controller
 
     public function create()
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
 
         return view('serviceManagement.createAttribute');
     }
 
     public function store(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'name' => [
                 'required',
                 'string',
                 Rule::unique('deviceattributes')
             ],
-            'display' => ['string'],
-            'approved_layers' => ['required', 'integer'],
-            'approved_level' => ['required', 'integer'],
-            'pickup_form' => ['string'],
-            'return_form' => ['string'],
-            'companion_number' => ['required', 'integer']
+            'display' => [ 'string' ],
+            'approved_layers' => [ 'required', 'integer' ],
+            'approved_level' => [ 'required', 'integer' ],
+            'pickup_form' => [ 'string' ],
+            'return_form' => [ 'string' ],
+            'companion_number' => [ 'required', 'integer' ]
         ]);
         $data['display'] = (isset($data['display']) && $data['display'] == 'on') ? 1 : 0;
         $data['pickup_form'] = (isset($data['pickup_form']) && $data['pickup_form'] == 'on') ? 1 : 0;
@@ -118,15 +128,30 @@ class DeviceAttributeController extends Controller
 
     public function show($id)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $result = $this->deviceAttribute->show($id);
+        if (!$result) {
+            $messageData = [
+                'type' => "danger",
+                'message' => "無該設備類別"
+            ];
+            return redirect()->route('serviceManagement.list')->with('messageData', [$messageData]);
+        }
 
         return view('serviceManagement.editAttribute', ['result' => $result]);
     }
 
     public function update(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $attributeID = $request->input('attributeID');
         $data = $request->validate([
             'attributeID' => [
@@ -138,12 +163,12 @@ class DeviceAttributeController extends Controller
                 'string',
                 Rule::unique('deviceattributes')->ignore($attributeID, 'attributeID')
             ],
-            'display' => ['string'],
-            'approved_layers' => ['required', 'integer'],
-            'approved_level' => ['required', 'integer'],
-            'pickup_form' => ['string'],
-            'return_form' => ['string'],
-            'companion_number' => ['required', 'integer']
+            'display' => [ 'string' ],
+            'approved_layers' => [ 'required', 'integer' ],
+            'approved_level' => [ 'required', 'integer' ],
+            'pickup_form' => [ 'string' ],
+            'return_form' => [ 'string' ],
+            'companion_number' => [ 'required', 'integer' ]
         ]);
         $data['display'] = (isset($data['display']) && $data['display'] == 'on') ? 1 : 0;
         $data['pickup_form'] = (isset($data['pickup_form']) && $data['pickup_form'] == 'on') ? 1 : 0;
@@ -214,9 +239,13 @@ class DeviceAttributeController extends Controller
 
     public function delete(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
-            'id' => ['required', 'integer']
+            'id' => [ 'required', 'integer' ]
         ]);
         $result = $this->deviceAttribute->delete($data['id']);
 
@@ -225,10 +254,14 @@ class DeviceAttributeController extends Controller
 
     public function changeDisplay(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
-            'attributeID' => ['required', 'integer'],
-            'display' => ['required', 'integer']
+            'attributeID' => [ 'required', 'integer' ],
+            'display' => [ 'required', 'integer' ]
         ]);
 
         $result = $this->deviceAttribute->changeDisplay($data);

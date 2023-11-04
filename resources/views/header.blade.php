@@ -91,13 +91,13 @@
                 <button type="button" id="sidebarCollapse" class="btn">
                     <span class="navbar-toggler-icon" stroke="white"></span>
                 </button>
-                <a class="navbar-brand" href="" style="margin-left: 60px; color: white;">RenxxT</a>
+                <a class="navbar-brand" href="{{ route('renxxt') }}" style="margin-left: 60px; color: white;">RenxxT</a>
             </div>
             <div class="collapse navbar-collapse">
 				<ul class="nav ml-auto">
-					{{-- <li><a>您好, {{ Auth::user()->name }}</a></li> --}}
+					<li><a>您好, {{ Auth::user()->name }}</a></li>
 					<li class="mx-4">
-						{{-- <a href="{{ route('logout') }}">登出</a> --}}
+						<a href="{{ route('logout') }}" style="color: white">登出</a>
 					</li>
 				</ul>
 			</div>
@@ -107,17 +107,35 @@
     <div class="wrapper">
         <nav id="sidebar" class="active">
             <ul class="components">
+                <li>
+                    <a href="{{ route('renxxt') }}">預借看板</a>
+                </li>
                 @if(session('order') === 1)
                     <li>
-                        <a href="{{ route('userManagement.userList') }}">人員管理</a>
+                        <a href="{{ route('userManagement.list') }}">人員管理</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('serviceManagement.list') }}">服務管理</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('applicationManagement.applicationList') }}">預借申請管理</a>
                     </li>
                 @endif
                 @if(session('order') > 1)
                     <li>
                         <a href="{{ route('profile') }}">基本資料維護</a>
                     </li>
+                    <li>
+                        <a href="{{ route('applicationForm.create') }}">預借申請表單</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('applicationForm.applicationList') }}">我的申請列表</a>
+                    </li>
                 @endif
-                @if(Auth::user()->order > 1 && Auth::user() < $max)
+                @if(session('order') > 1 && session('order') < $maxOrder)
+                    <li>
+                        <a href="{{ route('applicationManagement.applicationList') }}">預借申請管理</a>
+                    </li>
                 @endif
             </ul>
         </nav>

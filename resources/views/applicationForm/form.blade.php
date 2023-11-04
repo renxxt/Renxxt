@@ -26,19 +26,26 @@
     @csrf
     @if ($result !== false)
         @foreach ($result as $row)
-            <div class="row">
-                <label class="col-sm-2 col-form-label">{{ $row['question'] }}</label>
+            <div class="row mt-4">
+                @if ($row['required'] == 0)
+                    <label class="col-sm-2 col-form-label">
+                        <span class="text-danger font-weight-bold">*</span>
+                        {{ $row['question'] }}
+                    </label>
+                @else
+                    <label class="col-sm-2 col-form-label">{{ $row['question'] }}</label>
+                @endif
                 <div class="col-sm-10">
                     <input name="questions[applicationID]" value="{{ $applicationID }}" hidden>
                     <input name="questions[questionID]" value="{{ $row['questionID'] }}" hidden>
-                    <input type="text" name="questions[answer_text]" class="form-control" value="{{ old('answer_text') }}" required>
+                    <input type="text" name="questions[answer_text]" class="form-control" value="{{ old('answer_text') }}" {{ $row['required'] == 0 ? 'required' : ''}}>
                 </div>
-            </div>
-            <div class="mt-4">
-                <input name="applicationID" value="{{ $applicationID }}" hidden>
-                <input type="submit" name="submit" class="btn" value="送出" style="background-color: #3E517A; color: white;">
             </div>
         @endforeach
     @endif
+    <div class="mt-4">
+        <input name="applicationID" value="{{ $applicationID }}" hidden>
+        <input type="submit" name="submit" class="btn" value="送出" style="background-color: #3E517A; color: white;">
+    </div>
 </form>
 @endsection

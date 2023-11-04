@@ -46,9 +46,9 @@
                 </div>
             </div>
             <div class="card collapse" id="collapse{{ $row['applicationID'] }}">
-                <div class="ml-3 mt-3">
+                <div class="ml-3 mt-3 row">
                     <ul style="list-style-type: none;">
-                        <h6>屬性名稱：{{ $row['attribute'] }}</h6>
+                        <h6>類別名稱：{{ $row['attribute'] }}</h6>
                         <h6>設備名稱：{{ $row['device'] }}</h6>
                         <h6>使用目的：{{ $row['target'] }}</h6>
                         @if ($row['companion'] == 1)
@@ -67,6 +67,14 @@
                         <h6>取用時間：{{ $row['pickup_time'] }}</h6>
                         <h6>歸還時間：{{ $row['return_time'] }}</h6>
                     </ul>
+                    <div class="btn ml-auto mr-4 mt-auto mb-4">
+                        @if ($row['pickup_form'] == 1)
+                            <button type="button" class="btn" id="pickupFormAnswer" style="background-color: #3E517A; color: #FFFFFF" data-id="{{ $row['applicationID'] }}">取用表單查看</button>
+                        @endif
+                        @if ($row['return_form'] == 1)
+                            <button type="button" class="btn" id="returnFormAnswer" style="background-color: #ECECEA; color: #000000" data-id="{{ $row['applicationID'] }}">歸還表單查看</button>
+                        @endif
+                    </div>
                 </div>
             </div>
         @endforeach
@@ -80,4 +88,90 @@
         </div>
     @endif
 </div>
+
+<div class="modal fade text-center" id="pickupModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 class="mb-3">取用表單</h3>
+                <ul class="pickup_list" style="padding: 0;">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade text-center" id="returnModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 class="mb-3">歸還表單</h3>
+                <ul class="return_list" style="padding: 0;">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $(document).on('click', '#pickupFormAnswer', function() {
+            var applicationID = $(this).data('id');
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('api.pickupFormAnswer.list') }}",
+                dataType: 'json',
+                data: {
+                    applicationID: applicationID,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    if (data !== false) {
+                        $.each(data, function(index, list) {
+                            if (list.answer_text == null) {
+                                list.answer_text = "---";
+                            }
+                            var listItem = $('<li class="list-group-item list-group-item-primary">' + list.question + '：' + list.answer_text + '</li>');
+                            $('.pickup_list').append(listItem);
+                        });
+                    }
+                }
+            });
+            $('#pickupModal').modal('show');
+        })
+
+        $('#pickupModal').on('hide.bs.modal', function () {
+            $('.pickup_list').empty();
+        });
+
+        $(document).on('click', '#returnFormAnswer', function() {
+            var applicationID = $(this).data('id');
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('api.returnFormAnswer.list') }}",
+                dataType: 'json',
+                data: {
+                    applicationID: applicationID,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    if (data !== false) {
+                        $.each(data, function(index, list) {
+                            if (list.answer_text == null) {
+                                list.answer_text = "---";
+                            }
+                            var listItem = $('<li class="list-group-item list-group-item-primary">' + list.question + '：' + list.answer_text + '</li>');
+                            $('.return_list').append(listItem);
+                        });
+                    }
+                }
+            });
+            $('#returnModal').modal('show');
+        })
+
+        $('#returnModal').on('hide.bs.modal', function () {
+            $('.return_list').empty();
+        });
+    })
+</script>
 @endsection

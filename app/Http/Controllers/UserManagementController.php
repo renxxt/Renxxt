@@ -24,8 +24,8 @@ class UserManagementController extends Controller
     public function getUser(Request $request)
     {
         $data = $request->validate([
-            'departmentID' => ['integer'],
-            'positionID' => ['integer']
+            'departmentID' => [ 'integer' ],
+            'positionID' => [ 'integer' ]
         ]);
         if (isset($data['positionID'])) {
             $resource = new Position();
@@ -38,7 +38,11 @@ class UserManagementController extends Controller
 
     public function list()
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $departmentID = 0;
         $result = $this->user->list($departmentID);
         $resource = new Department();
@@ -48,7 +52,11 @@ class UserManagementController extends Controller
 
     public function create()
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $resource = new Position();
         $positions = $resource->list();
         $resource = new Department();
@@ -58,7 +66,11 @@ class UserManagementController extends Controller
 
     public function store(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'uid' => [
                 'required',
@@ -83,12 +95,23 @@ class UserManagementController extends Controller
 
     public function show($id)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $resource = new Department();
         $departments = $resource->list();
         $resource = new Position();
         $positions = $resource->list();
         $result = $this->user->show($id);
+        if (!$result) {
+            $messageData = [
+                'type' => "danger",
+                'message' => "無該使用者"
+            ];
+            return redirect()->route('userManagement.list')->with('messageData', [$messageData]);
+        }
         $order = $resource->getOrder($result['positionID']);
         $suppliers = $this->user->list($order);
 
@@ -97,7 +120,11 @@ class UserManagementController extends Controller
 
     public function update(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $userID = $request->input('userID');
         $data = $request->validate([
             'userID' => [ 'required', 'integer' ],
@@ -123,7 +150,11 @@ class UserManagementController extends Controller
 
     public function delete(Request $request)
     {
-        $this->lib->adminAccess();
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
         $data = $request->validate([
             'userID' => [ 'required', 'integer' ]
         ]);
