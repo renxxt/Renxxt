@@ -173,12 +173,10 @@ class DeviceController extends Controller
             'attributeID' => [ 'required', 'integer' ],
             'estimated_pickup_time' => [
                 'required',
-                'date_format:Y-m-d H:i',
                 'before:estimated_return_time'
             ],
             'estimated_return_time' => [
                 'required',
-                'date_format:Y-m-d H:i',
                 'after:estimated_pickup_time'
             ]
         ]);

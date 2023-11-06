@@ -71,6 +71,8 @@
 <script>
     $(document).ready(function() {
         $('#positionList').change(function() {
+            $('#superiorList option').remove();
+            $('#superiorList').append('<option disabled>請選擇上級</option>');
             var positionID = $(this).val();
             $.ajax({
                 type: 'POST',

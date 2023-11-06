@@ -34,7 +34,7 @@ class Lib
     # 管理層
     public function managementAccess()
     {
-        if (session('order') > 1 && session('order') < $this->maxOrder) {
+        if (session('order') < $this->maxOrder) {
             //
         } else {
             return redirect()->route('renxxt');

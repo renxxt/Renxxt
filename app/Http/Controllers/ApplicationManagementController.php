@@ -21,7 +21,7 @@ class ApplicationManagementController extends Controller
 
     public function applicationList()
     {
-        $access = $this->lib->adminAccess();
+        $access = $this->lib->managementAccess();
         if ($access instanceof \Illuminate\Http\RedirectResponse) {
             return $access;
         }
@@ -34,7 +34,7 @@ class ApplicationManagementController extends Controller
 
     public function cancelList()
     {
-        $access = $this->lib->adminAccess();
+        $access = $this->lib->managementAccess();
         if ($access instanceof \Illuminate\Http\RedirectResponse) {
             return $access;
         }
@@ -47,7 +47,7 @@ class ApplicationManagementController extends Controller
 
     public function completedList()
     {
-        $access = $this->lib->adminAccess();
+        $access = $this->lib->managementAccess();
         if ($access instanceof \Illuminate\Http\RedirectResponse) {
             return $access;
         }
@@ -60,7 +60,7 @@ class ApplicationManagementController extends Controller
 
     public function approve(Request $request)
     {
-        $access = $this->lib->adminAccess();
+        $access = $this->lib->managementAccess();
         if ($access instanceof \Illuminate\Http\RedirectResponse) {
             return $access;
         }

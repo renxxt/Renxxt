@@ -9,8 +9,18 @@ class PositionResource
     public function list()
     {
         $result = Position::where('positionID', '>', '1')
-                    ->orderBy('order', 'desc')
+                    ->orderBy('order', 'asc')
                     ->get();
+
+        return $result;
+    }
+
+    public function store($data)
+    {
+        $result = Position::insert([
+                    'position' => $data['position'],
+                    'order' => $data['order']
+                ]);
 
         return $result;
     }

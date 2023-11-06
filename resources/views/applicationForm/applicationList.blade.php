@@ -156,10 +156,19 @@
     </div>
 </div>
 
-<div class="modal" id="contentModal" role="dialog">
+<div class="modal text-center" id="successModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="background-color: #3E517A; color: #FFFFFF">
+            <div class="modal-body" id="successContent">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="errorModal" role="dialog">
     <div class="modal-dialog modal-sm" style="background-color: #FF0000">
         <div class="modal-content">
-            <div class="modal-body" id="content">
+            <div class="modal-body" id="errorContent">
             </div>
         </div>
     </div>
@@ -188,14 +197,15 @@
         })
 
         $(document).on('click', '#delete', function() {
-            $('#content h3').remove();
+            $('#successContent h3').remove();
+            $('#errorContent h3').remove();
             var id = $(this).data('id');
             var result = $('#result').val();
             if (result === '') {
-                $('#content').append('<h3>請填寫取消原因</h3>');
-                $('#contentModal').modal('show');
+                $('#errorContent').append('<h3>請填寫取消原因</h3>');
+                $('#errorModal').modal('show');
                 setTimeout(function() {
-                    $('#contentModal').modal('hide');
+                    $('#errorModal').modal('hide');
                 }, 2000);
             } else {
                 $.ajax({
@@ -208,18 +218,18 @@
                     url: "{{ route('applicationForm.cancel') }}",
                     dataType: 'json',
                     success: function() {
-                        $('#content').append('<h3>成功取消</h3>');
-                        $('#contentModal').modal('show');
+                        $('#successContent').append('<h3>成功取消</h3>');
+                        $('#successModal').modal('show');
                         setTimeout(function() {
-                            $('#contentModal').modal('hide');
+                            $('#successModal').modal('hide');
                             location.reload();
                         }, 2000);
                     },
                     error: function() {
-                        $('#content').append('<h3>取消失敗</h3>');
-                        $('#contentModal').modal('show');
+                        $('#errorContent').append('<h3>取消失敗</h3>');
+                        $('#errorModal').modal('show');
                         setTimeout(function() {
-                            $('#contentModal').modal('hide');
+                            $('#errorModal').modal('hide');
                             location.reload();
                         }, 2000);
                     },
@@ -250,14 +260,15 @@
         })
 
         $(document).on('click', '#check', function() {
-            $('#content h3').remove();
+            $('#successContent h3').remove();
+            $('#errorContent h3').remove();
             var id = $(this).data('id');
             var extend_time = $('#estimated_return_time').val();
             if (extend_time === '') {
-                $('#content').append('<h3>延長結束時間為必填</h3>');
-                $('#contentModal').modal('show');
+                $('#errorContent').append('<h3>延長結束時間為必填</h3>');
+                $('#errorModal').modal('show');
                 setTimeout(function() {
-                    $('#contentModal').modal('hide');
+                    $('#errorModal').modal('hide');
                 }, 2000);
             } else {
                 $.ajax({
@@ -272,22 +283,26 @@
                     success: function(data) {
                         if (data.messageData) {
                             var result = data.messageData.message;
-                            $('#content').append('<h4>延長借用時間失敗，與下個預借時段（' + result.estimated_pickup_time + '~' + result.estimated_return_time + '）有重疊</h4>');
+                            $('#errorContent').append('<h4>延長借用時間失敗，與下個預借時段（' + result.estimated_pickup_time + '~' + result.estimated_return_time + '）有重疊</h4>');
+                            $('#errorModal').modal('show');
+                            setTimeout(function() {
+                                $('#errorModal').modal('hide');
+                                location.reload();
+                            }, 2000);
                         } else {
-                            $('#content').append('<h3>成功延長借用時間</h3>');
+                            $('#successContent').append('<h3>成功延長借用時間</h3>');
+                            $('#successModal').modal('show');
+                            setTimeout(function() {
+                                $('#successModal').modal('hide');
+                                location.reload();
+                            }, 2000);
                         }
-
-                        $('#contentModal').modal('show');
-                        setTimeout(function() {
-                            $('#contentModal').modal('hide');
-                            location.reload();
-                        }, 2000);
                     },
                     error: function() {
-                        $('#content').append('<h3>延長借用時間失敗</h3>');
-                        $('#contentModal').modal('show');
+                        $('#errorContent').append('<h3>延長借用時間失敗</h3>');
+                        $('#errorModal').modal('show');
                         setTimeout(function() {
-                            $('#contentModal').modal('hide');
+                            $('#errorModal').modal('hide');
                             location.reload();
                         }, 2000);
                     },

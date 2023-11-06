@@ -72,6 +72,8 @@
         }
 
         function superiorList(positionID) {
+            $('#superiorList option').remove();
+            $('#superiorList').append('<option disabled selected>請選擇上級</option>');
             $.ajax({
                 type: 'POST',
                 url: "{{ route('api.getUser') }}",

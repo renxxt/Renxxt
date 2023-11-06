@@ -8,7 +8,8 @@ class QuestionResource
 {
     public function list()
     {
-        $result = Question::get();
+        $result = Question::where('state', 0)
+                    ->get();
 
         if ($result->count() > 0) {
             return $result;
@@ -23,6 +24,26 @@ class QuestionResource
                     'question' => $data['question'],
                     'type' => $data['type']
                 ]);
+
+        return $result;
+    }
+
+    public function update($data)
+    {
+        $result = Question::where('questionID', $data['questionID'])
+                    ->update([
+                        'question' => $data['question']
+                    ]);
+
+        return $result;
+    }
+
+    public function delete($data)
+    {
+        $result = Question::where('questionID', $data['questionID'])
+                    ->update([
+                        'state' => 1
+                    ]);
 
         return $result;
     }

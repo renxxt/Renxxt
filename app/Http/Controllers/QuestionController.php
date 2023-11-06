@@ -25,6 +25,17 @@ class QuestionController extends Controller
         return response()->json($result);
     }
 
+    public function list()
+    {
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $result = $this->question->list();
+        return view('questionManagement.questionlist', ['result' => $result]);
+    }
+
     public function store(Request $request)
     {
         $access = $this->lib->adminAccess();
@@ -41,6 +52,43 @@ class QuestionController extends Controller
         ]);
         $data['type'] = 1;
         $result = $this->question->store($data);
+
+        return $result;
+    }
+
+    public function update(Request $request)
+    {
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $questionID = $request->input('questionID');
+        $data = $request->validate([
+            'questionID' => [ 'required', 'integer' ],
+            'question' => [
+                'required',
+                'string',
+                Rule::unique('questions')->ignore($questionID, 'questionID')
+            ]
+        ]);
+        $data['type'] = 1;
+        $result = $this->question->update($data);
+
+        return $result;
+    }
+
+    public function delete(Request $request)
+    {
+        $access = $this->lib->adminAccess();
+        if ($access instanceof \Illuminate\Http\RedirectResponse) {
+            return $access;
+        }
+
+        $data = $request->validate([
+            'questionID' => [ 'required', 'integer' ]
+        ]);
+        $result = $this->question->delete($data);
 
         return $result;
     }
