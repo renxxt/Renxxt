@@ -2,6 +2,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\DeviceAttributeController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\QuestionController;
@@ -48,6 +50,23 @@ Route::controller(UserManagementController::class)->middleware('auth')->group(fu
     });
 });
 
+Route::controller(DepartmentController::class)->middleware('auth')->group(function () {
+    Route::prefix('departmentManagement')->group(function () {
+        Route::get('/list', 'list')->name('departmentManagement.list');
+        Route::post('/department', 'store')->name('departmentManagement.store');
+        Route::put('/department', 'update')->name('departmentManagement.update');
+        Route::delete('/department', 'delete')->name('departmentManagement.delete');
+    });
+});
+
+Route::controller(PositionController::class)->middleware('auth')->group(function () {
+    Route::prefix('positionManagement')->group(function () {
+        Route::get('/list', 'list')->name('positionManagement.list');
+        Route::post('/position', 'store')->name('positionManagement.store');
+        Route::post('/changeOrder', 'changeOrder')->name('positionManagement.changeOrder');
+    });
+});
+
 Route::controller(DeviceAttributeController::class)->middleware('auth')->group(function () {
     Route::prefix('serviceManagement')->group(function () {
         Route::get('/list', 'list')->name('serviceManagement.list');
@@ -72,12 +91,15 @@ Route::controller(DeviceController::class)->middleware('auth')->group(function (
 });
 
 Route::controller(QuestionController::class)->middleware('auth')->group(function () {
-    Route::prefix('serviceManagement')->group(function () {
-        Route::post('/question', 'store')->name('serviceManagement.question.store');
+    Route::prefix('questionManagement')->group(function () {
+        Route::get('/question', 'list')->name('questionManagement.list');
+        Route::post('/question', 'store')->name('questionManagement.store');
+        Route::put('/question', 'update')->name('questionManagement.update');
+        Route::delete('/question', 'delete')->name('questionManagement.delete');
     });
 });
 
-Route::controller(StagedApplicationFormController::class)->group(function () {
+Route::controller(StagedApplicationFormController::class)->middleware('auth')->group(function () {
     Route::prefix('staged')->group(function () {
         Route::get('/applicationForm/list', 'list')->name('staged.list');
         Route::post('/applicationForm', 'store')->name('staged.store');
@@ -87,7 +109,7 @@ Route::controller(StagedApplicationFormController::class)->group(function () {
     });
 });
 
-Route::controller(ApplicationFormController::class)->group(function () {
+Route::controller(ApplicationFormController::class)->middleware('auth')->group(function () {
     Route::get('/renxxt', 'index')->name('renxxt');
     Route::get('/applicationForm/list', 'applicationList')->name('applicationForm.applicationList');
     Route::get('/applicationForm/cancelList', 'cancelList')->name('applicationForm.cancelList');
@@ -99,7 +121,7 @@ Route::controller(ApplicationFormController::class)->group(function () {
     Route::post('/applicationForm/cancel', 'cancel')->name('applicationForm.cancel');
 });
 
-Route::controller(ApplicationManagementController::class)->group(function () {
+Route::controller(ApplicationManagementController::class)->middleware('auth')->group(function () {
     Route::prefix('applicationManagement')->group(function () {
         Route::get('/list', 'applicationList')->name('applicationManagement.applicationList');
         Route::get('/cancelList', 'cancelList')->name('applicationManagement.cancelList');

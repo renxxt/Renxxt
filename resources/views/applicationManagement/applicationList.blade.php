@@ -105,10 +105,19 @@
     @endif
 </div>
 
-<div class="modal" id="contentModal" role="dialog">
+<div class="modal text-center" id="successModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="background-color: #3E517A; color: #FFFFFF">
+            <div class="modal-body" id="successContent">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="errorModal" role="dialog">
     <div class="modal-dialog modal-sm" style="background-color: #FF0000">
         <div class="modal-content">
-            <div class="modal-body" id="content">
+            <div class="modal-body" id="errorContent">
             </div>
         </div>
     </div>
@@ -129,7 +138,8 @@
 <script>
     $(document).ready(function() {
         $(document).on('click', '#approve', function() {
-            $('#content h3').remove();
+            $('#successContent h3').remove();
+            $('#errorContent h3').remove();
             var id = $(this).data('id');
             $.ajax({
                 type: 'POST',
@@ -140,18 +150,18 @@
                 url: "{{ route('applicationManagement.approve') }}",
                 dataType: 'json',
                 success: function() {
-                    $('#content').append('<h3>審核成功</h3>');
-                    $('#contentModal').modal('show');
+                    $('#successContent').append('<h3>審核成功</h3>');
+                    $('#successModal').modal('show');
                     setTimeout(function() {
-                        $('#contentModal').modal('hide');
+                        $('#successModal').modal('hide');
                         location.reload();
                     }, 2000);
                 },
                 error: function() {
-                    $('#content').append('<h3>審核失敗</h3>');
-                    $('#contentModal').modal('show');
+                    $('#errorContent').append('<h3>審核失敗</h3>');
+                    $('#errorModal').modal('show');
                     setTimeout(function() {
-                        $('#contentModal').modal('hide');
+                        $('#errorModal').modal('hide');
                         location.reload();
                     }, 2000);
                 },

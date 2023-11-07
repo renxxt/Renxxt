@@ -328,7 +328,7 @@
                 var question = $('input[name="question"]').val();
                 $.ajax({
                     type: 'POST',
-                    url: "{{ route('serviceManagement.question.store') }}",
+                    url: "{{ route('questionManagement.store') }}",
                     dataType: 'json',
                     data: {
                         question: question,

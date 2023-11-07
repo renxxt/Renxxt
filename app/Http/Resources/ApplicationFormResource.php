@@ -96,7 +96,7 @@ class ApplicationFormResource
                     ->leftjoin('deviceattributes AS DA', 'DA.attributeID', '=', 'D.attributeID')
                     ->leftjoin('users AS U', 'U.userID', '=', 'applicationforms.userID')
                     ->leftjoin('departments AS DE', 'DE.departmentID', '=', 'U.departmentID')
-                    ->select('applicationforms.*', 'DA.name AS attribute', 'D.name AS device', 'DE.department')
+                    ->select('applicationforms.*', 'DA.name AS attribute', 'D.name AS device', 'DE.department', 'U.name')
                     ->first();
 
         return $result;

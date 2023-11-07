@@ -16,6 +16,10 @@
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <style>
+        body {
+            background-color: #ececea;
+        }
+
         .navbar {
             background: #3E517A;
             color: #FFFFFF;
@@ -112,10 +116,19 @@
                 </li>
                 @if(session('order') === 1)
                     <li>
+                        <a href="{{ route('positionManagement.list') }}">職位管理</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('departmentManagement.list') }}">部門管理</a>
+                    </li>
+                    <li>
                         <a href="{{ route('userManagement.list') }}">人員管理</a>
                     </li>
                     <li>
                         <a href="{{ route('serviceManagement.list') }}">服務管理</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('questionManagement.list') }}">表單問項管理</a>
                     </li>
                     <li>
                         <a href="{{ route('applicationManagement.applicationList') }}">預借申請管理</a>

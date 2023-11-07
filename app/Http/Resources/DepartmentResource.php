@@ -12,4 +12,23 @@ class DepartmentResource
 
         return $result;
     }
+
+    public function store($data)
+    {
+        $result = Department::insert([
+                    'department' => $data['department']
+                ]);
+
+        return $result;
+    }
+
+    public function update($data)
+    {
+        $result = Department::where('departmentID', $data['departmentID'])
+                    ->update([
+                        'department' => $data['department']
+                    ]);
+
+        return $result;
+    }
 }
