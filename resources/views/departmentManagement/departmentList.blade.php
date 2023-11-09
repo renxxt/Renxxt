@@ -67,7 +67,7 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn" id="update" data-dismiss="modal" style="background-color: #3E517A; color: #FFFFFF">修改</button>
-                <button type="button" class="btn" data-dismiss="modal" style="background-color: #ECECEA; color: #000000">關閉</button>
+                <button type="button" class="btn" id="cancelEdit" style="background-color: #ECECEA; color: #000000">關閉</button>
             </div>
         </div>
     </div>
@@ -146,6 +146,10 @@
             $('#department').before('<h3 class="mb-3">修改 - ' + department + '</h3>');
             $('#edit').modal('show');
             $('#update').attr('data-id', departmentID);
+        })
+
+        $(document).on('click', '#cancelEdit', function() {
+            $('#edit').modal('hide');
         })
 
         $(document).on('click', '#update', function() {

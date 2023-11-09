@@ -6,13 +6,25 @@ use App\Models\Device;
 
 class DeviceResource
 {
-    public function list($id)
+    public function managementList($id)
     {
         $result = Device::where('devices.attributeID', $id)
                     ->select('devices.*', 'U.name AS userName')
                     ->leftjoin('deviceattributes AS A', 'A.attributeID', '=', 'devices.attributeID')
                     ->leftjoin('users AS U', 'U.userID', '=', 'devices.userID')
                     ->where('devices.display', '<', 2)
+                    ->get();
+
+        return $result;
+    }
+
+    public function list($id)
+    {
+        $result = Device::where('devices.attributeID', $id)
+                    ->select('devices.*', 'U.name AS userName')
+                    ->leftjoin('deviceattributes AS A', 'A.attributeID', '=', 'devices.attributeID')
+                    ->leftjoin('users AS U', 'U.userID', '=', 'devices.userID')
+                    ->where('devices.display', 1)
                     ->get();
 
         return $result;
@@ -121,7 +133,7 @@ class DeviceResource
     public function getDevices($data)
     {
         $result = Device::where('attributeID', $data['attributeID'])
-                    ->where('display', 0)
+                    ->where('display', 1)
                     ->select('devices.*')
                     ->whereNotIn('devices.deviceID', function ($query) use ($data) {
                         $query->select('A.deviceID')

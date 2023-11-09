@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('storage_location', 100)->comment("擺放地點");
             $table->integer('price')->comment("費用");
             $table->integer('attributeID')->unsigned()->comment("屬性 id");
-            $table->integer('display')->comment("設備狀態(0→可見，1→隱藏，2→已刪除)");
+            $table->integer('display')->comment("設備狀態(0→隱藏，1→可見，2→已刪除)");
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->comment("創建時間");
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))->comment("更新時間");
 
