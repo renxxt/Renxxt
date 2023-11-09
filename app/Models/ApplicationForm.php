@@ -42,7 +42,7 @@ class ApplicationForm extends Model
 
     public function pickupformanswers()
     {
-        return $this->hasMany(pickupFormAnswer::class, 'applicationID', 'applicationID')
+        return $this->hasMany(PickupFormAnswer::class, 'applicationID', 'applicationID')
                 ->leftJoin('questions AS Q', 'Q.questionID', '=', 'pickupformanswers.questionID');
     }
 }

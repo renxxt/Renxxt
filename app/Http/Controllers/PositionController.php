@@ -27,7 +27,7 @@ class PositionController extends Controller
         }
 
         $result = $this->position->list();
-        return view('positionManagement.positionlist', ['result' => $result]);
+        return view('positionManagement.positionList', ['result' => $result]);
     }
 
     public function store(Request $request)

@@ -26,7 +26,7 @@ class DepartmentController extends Controller
         }
 
         $result = $this->department->list();
-        return view('departmentManagement.departmentlist', ['result' => $result]);
+        return view('departmentManagement.departmentList', ['result' => $result]);
     }
 
     public function store(Request $request)

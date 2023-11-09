@@ -6,9 +6,16 @@ use App\Models\DeviceAttribute;
 
 class DeviceAttributeResource
 {
+    public function managementList()
+    {
+        $result = DeviceAttribute::where('display', '<', 2)->get();
+
+        return $result;
+    }
+
     public function list()
     {
-        $result = DeviceAttribute::where('display', 0)->get();
+        $result = DeviceAttribute::where('display', 1)->get();
 
         return $result;
     }

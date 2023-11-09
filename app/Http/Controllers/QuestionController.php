@@ -33,7 +33,7 @@ class QuestionController extends Controller
         }
 
         $result = $this->question->list();
-        return view('questionManagement.questionlist', ['result' => $result]);
+        return view('questionManagement.questionList', ['result' => $result]);
     }
 
     public function store(Request $request)

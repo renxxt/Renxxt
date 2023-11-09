@@ -29,7 +29,7 @@ class DeviceController extends Controller
             ]
         ]);
 
-        $devices = $this->device->list($data['attributeID']);
+        $devices = $this->device->managementList($data['attributeID']);
         return $devices;
     }
 
