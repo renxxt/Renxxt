@@ -11,11 +11,7 @@ class QuestionResource
         $result = Question::where('state', 0)
                     ->get();
 
-        if ($result->count() > 0) {
-            return $result;
-        } else {
-            return false;
-        }
+        return $result;
     }
 
     public function store($data)

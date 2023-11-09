@@ -26,7 +26,7 @@ class DeviceAttributeController extends Controller
         if ($access instanceof \Illuminate\Http\RedirectResponse) {
             return $access;
         }
-        $attributes = $this->deviceAttribute->list();
+        $attributes = $this->deviceAttribute->managementList();
 
         return view('serviceManagement.serviceManagement', ['attributes' => $attributes]);
     }

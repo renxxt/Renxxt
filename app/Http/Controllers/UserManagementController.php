@@ -54,7 +54,7 @@ class UserManagementController extends Controller
     {
         $access = $this->lib->adminAccess();
         if ($access instanceof \Illuminate\Http\RedirectResponse) {
-            return $access;
+        return $access;
         }
 
         $resource = new Position();
@@ -68,7 +68,7 @@ class UserManagementController extends Controller
     {
         $access = $this->lib->adminAccess();
         if ($access instanceof \Illuminate\Http\RedirectResponse) {
-            return $access;
+        return $access;
         }
 
         $data = $request->validate([

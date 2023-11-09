@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('deviceAttributes', function (Blueprint $table) {
             $table->increments('attributeID')->comment("屬性 id");
             $table->string('name', 100)->unique()->comment("屬性名字");
-            $table->integer('display')->comment("屬性狀態(0→可見，1→隱藏，2→已刪除)");
+            $table->integer('display')->comment("屬性狀態(0→隱藏，1→可見，2→已刪除)");
             $table->integer('approved_layers')->default(0)->comment("批准層數");
             $table->integer('approved_level')->default(0)->comment("批准層級");
             $table->integer('pickup_form')->default(0)->comment("是否需要取用表單(0→不需要，1→需要)");
