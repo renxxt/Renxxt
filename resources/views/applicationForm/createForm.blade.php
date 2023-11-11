@@ -104,7 +104,7 @@
                         <option disabled selected>請選擇類別</option>
                         @if ($attributes !== false)
                             @foreach ($attributes as $row)
-                                <option value="{{ $row['attributeID'] }}">{{ $row['name'] }}</option>
+                                <option value="{{ $row['attributeID'] }}" data-companion="{{ $row['companion_number'] }}">{{ $row['name'] }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -124,10 +124,10 @@
                     <input type="text" name="target" class="form-control" placeholder="輸入使用目的" required>
                 </div>
             </div>
-            <div class="row mt-3">
+            <div class="row mt-3" style="display: none;" id="createCompanion">
                 <a class="bi bi-plus-square" type="button" id="createBtn"></a>
             </div>
-            <div class="row">
+            <div class="row mt-3" style="display: none;" id="inputCompanion">
                 <label class="col-sm-2 col-form-label">陪同人</label>
                 <div class="col-sm-10">
                     <input type="text" name="companion[]" class="form-control" placeholder="輸入陪同人工號">
@@ -173,7 +173,7 @@
 </div>
 
 <div class="modal" id="failModal" role="dialog">
-    <div class="modal-dialog modal-sm" style="background-color: #FF0000">
+    <div class="modal-dialog modal-xl" style="background-color: #FF0000">
         <div class="modal-content">
             <div id="failContent">
             </div>
@@ -255,11 +255,25 @@
 			$(this).val('');
 		});
 
+        var globalCompanion = 0;
+        var count = 1;
         $('#attributeID').change(function() {
             var attributeID = $('#attributeID').val();
 			var pickupTime = $('input[name="estimated_pickup_time"]').val();
 			var returnTime = $('input[name="estimated_return_time"]').val();
             if (pickupTime != '' && returnTime != '') {
+                var companion = $('#attributeID option:selected').data('companion');
+                if (companion > 0){
+                    if (companion > 1) {
+                        $('#createCompanion').show();
+                    }
+                    $('#inputCompanion').show();
+                    globalCompanion = companion;
+                    count = 1;
+                } else {
+                    $('#createCompanion').hide();
+                    $('#inputCompanion').hide();
+                }
                 getDevice(pickupTime, returnTime, attributeID);
             }
         });
@@ -296,7 +310,10 @@
                 <input type="text" name="companion[]" class="form-control mt-3" placeholder="輸入陪同人工號">
             `;
 
-            $(button).insertAfter('input[name="companion[]"]:last');
+            if (count < globalCompanion) {
+                count++;
+                $(button).insertAfter('input[name="companion[]"]:last');
+            }
         })
 
         $(document).on('click', '.bi-trash-fill', function() {
@@ -362,6 +379,12 @@
                         }, 2000);
                     }
 
+                    if (result['companion_number'] > 0) {
+                        globalCompanion = result['companion_number'];
+                        $('#createCompanion').show();
+                        $('#inputCompanion').show();
+                    }
+
                     if (result['companions'].length !== 0) {
                         $.each(result['companions'], function(index, list) {
                             if (index === 0) {
@@ -403,6 +426,7 @@
                         setTimeout(function() {
                             $('#failModal').modal('hide');
                         }, 3000);
+                        location.reload();
                     } else if (data.result) {
                         window.location.href = "{{ route('applicationForm.applicationList') }}";
                     }

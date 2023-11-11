@@ -228,11 +228,33 @@ class ApplicationFormResource
                         ->where('applicationID', '<>', $data['applicationID'])
                         ->select('estimated_pickup_time', 'estimated_return_time')
                         ->first();
+
+            $result = ApplicationForm::where('deviceID', $data['deviceID'])
+                        ->where(function ($query) use ($data) {
+                            $query->where(function ($query) use ($data) {
+                                $query->where('estimated_pickup_time', '>=', $data['estimated_pickup_time'])
+                                    ->where('estimated_pickup_time', '<=', $data['extend_time']);
+                            })
+                            ->orWhere(function ($query) use ($data) {
+                                $query->where('estimated_return_time', '>=', $data['estimated_pickup_time'])
+                                    ->where('estimated_return_time', '<=', $data['extend_time']);
+                            });
+                        })
+                        ->where('applicationID', '<>', $data['applicationID'])
+                        ->select('estimated_pickup_time', 'estimated_return_time')
+                        ->first();
         } else {
             $result = ApplicationForm::where('deviceID', $data['deviceID'])
-                        ->where('estimated_pickup_time', '<=', $data['estimated_pickup_time'])
-                        ->where('estimated_return_time', '>=', $data['estimated_return_time'])
-                        ->where('applicationID', '<>', $data['applicationID'])
+                        ->where(function ($query) use ($data) {
+                            $query->where(function ($query) use ($data) {
+                                $query->where('estimated_pickup_time', '>=', $data['estimated_pickup_time'])
+                                    ->where('estimated_pickup_time', '<=', $data['estimated_return_time']);
+                            })
+                            ->orWhere(function ($query) use ($data) {
+                                $query->where('estimated_return_time', '>=', $data['estimated_pickup_time'])
+                                    ->where('estimated_return_time', '<=', $data['estimated_return_time']);
+                            });
+                        })
                         ->exists();
         }
 
