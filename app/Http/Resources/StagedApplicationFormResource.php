@@ -49,7 +49,8 @@ class StagedApplicationFormResource
                     ->where('stagedapplicationforms.applicationID', $id)
                     ->leftjoin('users AS U', 'U.userID', '=', 'stagedapplicationforms.userID')
                     ->leftjoin('devices AS D', 'D.deviceID', '=', 'stagedapplicationforms.deviceID')
-                    ->select('stagedapplicationforms.*', 'U.name', 'D.attributeID')
+                    ->leftjoin('deviceattributes AS DA', 'DA.attributeID', '=', 'D.attributeID')
+                    ->select('stagedapplicationforms.*', 'U.name', 'D.attributeID', 'DA.companion_number')
                     ->first();
 
         return $result;

@@ -59,7 +59,7 @@
     <div class="card text-center col-md-4">
         <form method="POST" action="{{ route('emailVerify') }}" class="mt-4">
             @csrf
-            <img src="{{ asset('storage/forgetPassword.png') }}" width="80" height="80">
+            <img src="{{ asset('images/forgetPassword.png') }}" width="80" height="80">
             <div class="form-group mt-4">
                 <input type="email" name="email" class="form-control" placeholder="輸入信箱" required>
             </div>
