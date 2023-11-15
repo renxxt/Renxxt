@@ -83,7 +83,7 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn" id="update" data-dismiss="modal" style="background-color: #3E517A; color: #FFFFFF">修改</button>
-                <button type="button" class="btn" data-dismiss="modal" style="background-color: #ECECEA; color: #000000">關閉</button>
+                <button type="button" class="btn" id="close" style="background-color: #ECECEA; color: #000000">關閉</button>
             </div>
         </div>
     </div>
@@ -226,10 +226,10 @@
                         $('#edit').hide();
                         $('#errorContent').append('<h3>更新失敗</h3>');
                         $('#errorModal').modal('show');
-                        // setTimeout(function() {
-                        //     $('#errorModal').modal('hide');
-                        //     location.reload();
-                        // }, 2000);
+                        setTimeout(function() {
+                            $('#errorModal').modal('hide');
+                            location.reload();
+                        }, 2000);
                     },
                 });
             } else {
@@ -241,6 +241,10 @@
                     location.reload();
                 }, 2000);
             }
+        })
+
+        $(document).on('click', '#close', function() {
+            $('#edit').modal('hide');
         })
     })
 </script>
