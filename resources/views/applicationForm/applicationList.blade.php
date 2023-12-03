@@ -54,8 +54,10 @@
         @foreach ($result as $row)
             <div class="card" style="height: 70px;">
                 <div class="row mt-auto mb-auto">
-                    <div class="ml-5">
+                    <div class="ml-5 row">
                         <h4>{{ $row['uuid'] }}</h4>
+                        <h6 class="mx-5 mt-auto mb-auto">預借類別：{{ $row['attribute'] }}</h6>
+                        <h6 class="mt-auto mb-auto">預計使用時間：{{ $row['estimated_pickup_time'] }} ~ {{ $row['estimated_return_time'] }}</h6>
                     </div>
                     <div class="row ml-auto mr-4">
                         <h5 class="mt-auto mb-auto" style="color: #FF0000; margin-right: 50px;">
