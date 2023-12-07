@@ -41,7 +41,7 @@ class DeviceController extends Controller
         }
 
         $resource = new DeviceAttribute();
-        $attributes = $resource->list();
+        $attributes = $resource->managementList();
 
         return view('serviceManagement.createDevice', ['attributes' => $attributes]);
     }
@@ -87,7 +87,7 @@ class DeviceController extends Controller
         }
 
         $resource = new DeviceAttribute();
-        $attributes = $resource->list();
+        $attributes = $resource->managementList();
         $result = $this->device->show($id);
         if (!$result) {
             $messageData = [

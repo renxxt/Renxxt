@@ -175,8 +175,8 @@
         $(".pickupList").sortable();
         $(".pickupList").disableSelection();
 
-        var submitPickupForm = $('#pickupFormCheckbox').prop('checked') ? 'true' : 'false';
-        var submitReturnForm = $('#returnFormCheckbox').prop('checked') ? 'true' : 'false';
+        var submitPickupForm = $('#pickupFormCheckbox').prop('checked') ? true : false;
+        var submitReturnForm = $('#returnFormCheckbox').prop('checked') ? true : false;
         $('#pickupFormCheckbox').change(function() {
             var display = $(this).prop('checked');
             if (display == true) {
@@ -252,7 +252,7 @@
         });
 
         $(document).on('click', '#pickupPreview', function() {
-            if (submitReturnForm !== true) {
+            if (!submitReturnForm) {
                 $('#returnFormCheckbox').bootstrapToggle('off');
             }
             $('#returnForm').hide();
@@ -268,7 +268,7 @@
             if (display == true) {
                 $('.returnList').empty();
                 $('#pickupForm').hide();
-                if (!submitReturnForm) {
+                if (!submitPickupForm) {
                     $('#pickupFormCheckbox').bootstrapToggle('off');
                 }
                 $.ajax({
@@ -339,7 +339,7 @@
 
         $('#returnPreview').click(function() {
             $('#pickupForm').hide();
-            if (submitPickupForm !== true) {
+            if (!submitPickupForm) {
                 $('#pickupFormCheckbox').bootstrapToggle('off');
             }
             $('#returnForm').show();
