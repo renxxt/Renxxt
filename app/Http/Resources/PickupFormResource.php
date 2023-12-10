@@ -15,9 +15,10 @@ class PickupFormResource
         return $result;
     }
 
-    public function answerList($id)
+    public function answerList($attributeID, $id)
     {
-        $result = PickupForm::where('attributeID', $id)
+        $result = PickupForm::where('attributeID', $attributeID)
+                    ->where('applicationID', $id)
                     ->leftjoin('questions AS Q', 'Q.questionID', '=', 'pickupform.questionID')
                     ->leftjoin('pickupformanswers AS P', 'P.questionID', '=', 'Q.questionID')
                     ->get();

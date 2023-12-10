@@ -149,7 +149,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <h3>延長結束時間</h3>
-                <input type="datetime" id="estimated_return_time" class="form-control col-md-5" placeholder="輸入結束時間" required>
+                <input type="datetime" id="estimated_return_time" class="form-control" placeholder="輸入結束時間" required>
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn" id="check" data-dismiss="modal" style="background-color: #3E517A; color: #FFFFFF">送出</button>
@@ -251,6 +251,10 @@
                 format: 'YYYY-MM-DD H:mm',
             }
         });
+
+        $('#estimated_return_time').on('apply.daterangepicker', function(ev, picker) {
+			$(this).val(picker.startDate.format('YYYY-MM-DD H:mm'));
+		});
 
         $('#estimated_return_time').on('cancel.daterangepicker', function(ev, picker) {
 			$(this).val('');

@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use App\Http\Resources\DeviceAttributeResource AS DeviceAttribute;
 use App\Http\Resources\PickupFormResource AS PickupForm;
 use App\Http\Resources\ReturnFormResource AS ReturnForm;
+use App\Http\Resources\QuestionResource AS Question;
 
 class DeviceAttributeController extends Controller
 {
@@ -142,7 +143,27 @@ class DeviceAttributeController extends Controller
             return redirect()->route('serviceManagement.list')->with('messageData', [$messageData]);
         }
 
-        return view('serviceManagement.editAttribute', ['result' => $result]);
+        $resource = new Question();
+        $questions = $resource->list();
+        if (count($result['pickupForms']) > 0) {
+            $questionID = $result['pickupForms']->pluck('questionID')->toArray();
+            foreach ($questions as $question) {
+                if (!in_array($question['questionID'], $questionID)) {
+                    $result['pickupForms'][] = $question;
+                }
+            }
+        }
+
+        if (count($result['returnForms']) > 0) {
+            $questionID = $result['returnForms']->pluck('questionID')->toArray();
+            foreach ($questions as $question) {
+                if (!in_array($question['questionID'], $questionID)) {
+                    $result['returnForms'][] = $question;
+                }
+            }
+        }
+
+        return view('serviceManagement.editAttribute', ['result' => $result, 'question' => $question]);
     }
 
     public function update(Request $request)
