@@ -15,9 +15,10 @@ class ReturnFormResource
         return $result;
     }
 
-    public function answerList($id)
+    public function answerList($attributeID, $id)
     {
-        $result = ReturnForm::where('attributeID', $id)
+        $result = ReturnForm::where('attributeID', $attributeID)
+                    ->where('applicationID', $id)
                     ->leftjoin('questions AS Q', 'Q.questionID', '=', 'returnform.questionID')
                     ->leftjoin('returnformanswers AS P', 'P.questionID', '=', 'Q.questionID')
                     ->get();
