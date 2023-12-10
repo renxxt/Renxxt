@@ -43,7 +43,7 @@ class ReturnFormController extends Controller
 
         $resource = new ApplicationForm();
         $attribute = $resource->getAttributeID($data['applicationID']);
-        $answerData =$this->returnForm->answerList($attribute['attributeID']);
+        $answerData =$this->returnForm->answerList($attribute['attributeID'], $data['applicationID']);
         return $answerData;
     }
 

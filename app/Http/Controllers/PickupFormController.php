@@ -43,7 +43,7 @@ class PickupFormController extends Controller
 
         $resource = new ApplicationForm();
         $attribute = $resource->getAttributeID($data['applicationID']);
-        $answerData =$this->pickupForm->answerList($attribute['attributeID']);
+        $answerData =$this->pickupForm->answerList($attribute['attributeID'], $data['applicationID']);
         return $answerData;
     }
 

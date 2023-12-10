@@ -56,7 +56,7 @@
                 <option disabled>請選擇上級</option>
                 @if ($suppliers !== false)
                     @foreach ($suppliers as $sup)
-                        <option value="{{ $sup['userID'] }}" {{ $result['userID'] == $sup['supplierID'] ? 'selected' : '' }}>{{ $sup['name'] . " - " . $sup['position'] }}</option>
+                        <option value="{{ $sup['userID'] }}" {{ $sup['userID'] == $result['superiorID'] ? 'selected' : '' }}>{{ $sup['name'] . " - " . $sup['position'] }}</option>
                     @endforeach
                 @endif
             </select>
